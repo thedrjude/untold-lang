@@ -1,0 +1,107 @@
+{
+  "name": "untold-lang",
+  "displayName": "Untold Lang",
+  "description": "Syntax highlighting, snippets and run support for Untold Lang (.ut files)",
+  "version": "0.1.0",
+  "publisher": "untold",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onLanguage:untold"
+  ],
+  "main": "./extension.js",
+  "icon": "icon.png",
+  "contributes": {
+    "languages": [
+      {
+        "id": "untold",
+        "aliases": [
+          "Untold Lang",
+          "untold"
+        ],
+        "extensions": [
+          ".ut"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "untold",
+        "scopeName": "source.untold",
+        "path": "./syntaxes/untold.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "untold",
+        "path": "./snippets/untold.code-snippets"
+      }
+    ],
+    "commands": [
+      {
+        "command": "untold.runFile",
+        "title": "Untold: Run File",
+        "icon": "$(play)"
+      },
+      {
+        "command": "untold.checkFile",
+        "title": "Untold: Check Syntax"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "untold.runFile",
+          "when": "resourceExtname == .ut",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "untold.runFile",
+          "when": "resourceExtname == .ut",
+          "group": "untold"
+        },
+        {
+          "command": "untold.checkFile",
+          "when": "resourceExtname == .ut",
+          "group": "untold"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "untold.runFile",
+        "key": "ctrl+shift+r",
+        "when": "resourceExtname == .ut"
+      }
+    ],
+    "configuration": {
+      "title": "Untold Lang",
+      "properties": {
+        "untold.pythonPath": {
+          "type": "string",
+          "default": "python3",
+          "description": "Path to Python interpreter used to run Untold Lang"
+        },
+        "untold.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the Untold Lang cli/main.py (auto-detected if empty)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

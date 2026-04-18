@@ -1,0 +1,11 @@
+start main() {
+    say("Hello from Untold Lang!")
+
+    let name = "Builder"
+    say("Welcome, " + name)
+
+    loop i in 1..6 {
+        say("Line " + text(i))
+    }
+}
+

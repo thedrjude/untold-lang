@@ -1,0 +1,40 @@
+use untold.fs
+use untold.shell
+use untold.web
+use untold.ai
+use untold.hack
+
+start main() {
+
+    say("--- FS MODULE ---")
+    fs.write("hello.txt", "Hello from Untold Lang!")
+    let content = fs.read("hello.txt")
+    say(content)
+    say(fs.exists("hello.txt"))
+    fs.delete("hello.txt")
+    say(fs.exists("hello.txt"))
+
+    say("--- SHELL MODULE ---")
+    let result = shell.run("echo Untold Shell Works!")
+    say(result.out)
+    say(shell.platform())
+    say(shell.hostname())
+
+    say("--- WEB MODULE ---")
+    let res = http.get("https://httpbin.org/get")
+    say(res.status)
+    say(res.ok)
+
+    say("--- AI MODULE ---")
+    let text = "Untold Lang is an amazing and great programming language"
+    say(ai.sentiment(text))
+    say(ai.keywords(text, 3))
+    say(ai.word_count(text))
+
+    say("--- HACK MODULE ---")
+    say(hack.sha256("untold"))
+    say(hack.b64_encode("hello world"))
+    say(hack.caesar_cipher("Hello Untold", 3))
+    say(hack.find_emails("contact us at hello@untoldlang.dev or support@ut.dev"))
+
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Untold Lang — Documentation</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;--border:#2a2a2a;--purple:#a78bfa;--teal:#34d399;--amber:#fbbf24;--text:#e5e5e5;--muted:#888;--code-bg:#111;}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7;display:flex;flex-direction:column;min-height:100vh;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+    .logo{font-size:1.1rem;font-weight:700;color:var(--purple);}
+    .logo span{color:var(--teal);}
+    nav ul{list-style:none;display:flex;gap:2rem;}
+    nav a{color:var(--muted);text-decoration:none;font-size:0.9rem;}
+    nav a:hover{color:var(--text);}
+    .layout{display:grid;grid-template-columns:240px 1fr;flex:1;}
+    aside{border-right:1px solid var(--border);padding:2rem 1rem;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+    aside h4{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.75rem;margin-top:1.5rem;}
+    aside h4:first-child{margin-top:0;}
+    aside a{display:block;color:var(--muted);text-decoration:none;font-size:0.875rem;padding:0.3rem 0.5rem;border-radius:4px;margin-bottom:2px;}
+    aside a:hover{color:var(--text);background:var(--bg3);}
+    aside a.active{color:var(--purple);}
+    main{padding:3rem;max-width:820px;}
+    h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem;}
+    h2{font-size:1.4rem;font-weight:600;margin:2.5rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border);}
+    h3{font-size:1.1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--purple);}
+    p{margin-bottom:1rem;color:#ccc;}
+    code{background:var(--bg3);padding:0.15rem 0.4rem;border-radius:4px;font-family:monospace;font-size:0.85rem;color:var(--amber);}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;font-family:monospace;font-size:0.875rem;line-height:1.8;overflow-x:auto;margin:1rem 0;}
+    .kw{color:#a78bfa;}.fn{color:#34d399;}.str{color:#fbbf24;}.cm{color:#555;font-style:italic;}.ty{color:#60a5fa;}.num{color:#f87171;}
+    table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.875rem;}
+    th{text-align:left;padding:0.6rem 1rem;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;}
+    td{padding:0.6rem 1rem;border-bottom:1px solid var(--bg3);color:#ccc;}
+    td:first-child{color:var(--amber);font-family:monospace;}
+    .badge{display:inline-block;background:#1a1040;color:var(--purple);border:1px solid #3d2fa0;padding:0.2rem 0.6rem;border-radius:999px;font-size:0.75rem;margin-bottom:1rem;}
+    @media(max-width:700px){.layout{grid-template-columns:1fr;}aside{display:none;}}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="logo">Untold<span>Lang</span> <span style="color:var(--muted);font-size:0.75rem;font-weight:400">Docs</span></div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="playground.html">Playground</a></li>
+    <li><a href="https://github.com/untold-lang/untold" target="_blank">GitHub</a></li>
+  </ul>
+</nav>
+<div class="layout">
+<aside>
+  <h4>Getting Started</h4>
+  <a href="#install">Installation</a>
+  <a href="#hello">Hello World</a>
+  <a href="#cli">CLI Commands</a>
+  <h4>Language</h4>
+  <a href="#variables">Variables</a>
+  <a href="#functions">Functions</a>
+  <a href="#control">Control Flow</a>
+  <a href="#classes">Classes</a>
+  <a href="#errors">Error Handling</a>
+  <h4>Standard Library</h4>
+  <a href="#fs">untold.fs</a>
+  <a href="#web">untold.web</a>
+  <a href="#ai">untold.ai</a>
+  <a href="#shell">untold.shell</a>
+  <a href="#hack">untold.hack</a>
+  <a href="#net">untold.net</a>
+  <h4>Toolchain</h4>
+  <a href="#packages">Packages</a>
+  <a href="#build">Building</a>
+  <a href="#templates">Templates</a>
+</aside>
+<main>
+  <div class="badge">v0.1.0</div>
+  <h1>Untold Lang Documentation</h1>
+  <p>The complete reference for Untold Lang — the language without limits.</p>
+
+  <h2 id="install">Installation</h2>
+  <pre>pip install untold-lang</pre>
+  <p>Or clone and install from source:</p>
+  <pre>git clone https://github.com/untold-lang/untold
+cd untold
+pip install -e .</pre>
+
+  <h2 id="hello">Hello World</h2>
+  <pre><span class="kw">start</span> <span class="fn">main</span>() {
+    <span class="fn">say</span>(<span class="str">"Hello, Untold World!"</span>)
+}</pre>
+  <p>Save as <code>main.ut</code> and run with <code>untold run main.ut</code></p>
+
+  <h2 id="cli">CLI Commands</h2>
+  <table>
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td>untold run file.ut</td><td>Run an Untold source file</td></tr>
+    <tr><td>untold new &lt;name&gt; [template]</td><td>Create a new project</td></tr>
+    <tr><td>untold build</td><td>Build project to executable</td></tr>
+    <tr><td>untold install &lt;pkg&gt;</td><td>Install a package</td></tr>
+    <tr><td>untold check file.ut</td><td>Check syntax errors</td></tr>
+    <tr><td>untold info</td><td>Show project info</td></tr>
+  </table>
+
+  <h2 id="variables">Variables</h2>
+  <pre><span class="kw">let</span> name    = <span class="str">"Untold"</span>        <span class="cm">// mutable variable</span>
+<span class="kw">let</span> version : <span class="ty">num</span>  = <span class="num">1.0</span>      <span class="cm">// typed variable</span>
+<span class="kw">lock</span> MAX    : <span class="ty">num</span>  = <span class="num">100</span>      <span class="cm">// constant</span></pre>
+  <h3>Built-in types</h3>
+  <table>
+    <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+    <tr><td>num</td><td>Integer or float</td><td>42, 3.14</td></tr>
+    <tr><td>text</td><td>String</td><td>"hello"</td></tr>
+    <tr><td>bool</td><td>Boolean</td><td>true, false</td></tr>
+    <tr><td>list</td><td>Array</td><td>list(1,2,3)</td></tr>
+    <tr><td>map</td><td>Dictionary</td><td>{key: value}</td></tr>
+    <tr><td>null</td><td>No value</td><td>null</td></tr>
+  </table>
+
+  <h2 id="functions">Functions</h2>
+  <pre><span class="kw">fn</span> <span class="fn">add</span>(a: <span class="ty">num</span>, b: <span class="ty">num</span>) -> <span class="ty">num</span> {
+    <span class="kw">return</span> a + b
+}
+
+<span class="kw">async fn</span> <span class="fn">fetch</span>(url: <span class="ty">text</span>) -> <span class="ty">text</span> {
+    <span class="kw">wait</span> res = http.<span class="fn">get</span>(url)
+    <span class="kw">return</span> res.body
+}</pre>
+
+  <h2 id="control">Control Flow</h2>
+  <pre><span class="kw">if</span> x > <span class="num">10</span> {
+    <span class="fn">say</span>(<span class="str">"big"</span>)
+} <span class="kw">elif</span> x > <span class="num">5</span> {
+    <span class="fn">say</span>(<span class="str">"medium"</span>)
+} <span class="kw">else</span> {
+    <span class="fn">say</span>(<span class="str">"small"</span>)
+}
+
+<span class="kw">loop</span> i <span class="kw">in</span> <span class="num">0</span>..<span class="num">10</span> { <span class="fn">say</span>(i) }
+
+<span class="kw">while</span> active { <span class="fn">doWork</span>() }</pre>
+
+  <h2 id="classes">Classes</h2>
+  <pre><span class="kw">class</span> <span class="ty">Person</span> {
+    name : <span class="ty">text</span>
+    age  : <span class="ty">num</span>
+
+    <span class="kw">fn</span> <span class="fn">greet</span>() {
+        <span class="fn">say</span>(<span class="str">"Hi, I am "</span> + <span class="kw">self</span>.name)
+    }
+}
+
+<span class="kw">let</span> p = <span class="ty">Person</span>{ name: <span class="str">"Dev"</span>, age: <span class="num">22</span> }
+p.<span class="fn">greet</span>()</pre>
+
+  <h2 id="errors">Error Handling</h2>
+  <pre><span class="kw">try</span> {
+    <span class="kw">let</span> data = fs.<span class="fn">read</span>(<span class="str">"file.txt"</span>)
+} <span class="kw">catch</span> err {
+    <span class="fn">say</span>(<span class="str">"Error: "</span> + err.msg)
+} <span class="kw">finally</span> {
+    <span class="fn">say</span>(<span class="str">"Done"</span>)
+}</pre>
+
+  <h2 id="fs">untold.fs — File System</h2>
+  <pre><span class="kw">use</span> untold.fs
+
+fs.<span class="fn">write</span>(<span class="str">"file.txt"</span>, <span class="str">"hello"</span>)
+<span class="kw">let</span> content = fs.<span class="fn">read</span>(<span class="str">"file.txt"</span>)
+fs.<span class="fn">mkdir</span>(<span class="str">"myfolder"</span>)
+fs.<span class="fn">delete</span>(<span class="str">"file.txt"</span>)
+<span class="fn">say</span>(fs.<span class="fn">exists</span>(<span class="str">"file.txt"</span>))</pre>
+
+  <h2 id="web">untold.web — HTTP</h2>
+  <pre><span class="kw">use</span> untold.web
+
+<span class="kw">let</span> res = http.<span class="fn">get</span>(<span class="str">"https://api.example.com/data"</span>)
+<span class="fn">say</span>(res.status)
+<span class="fn">say</span>(res.body)
+
+http.<span class="fn">serve</span>(<span class="num">8080</span>)</pre>
+
+  <h2 id="ai">untold.ai — AI & ML</h2>
+  <pre><span class="kw">use</span> untold.ai
+
+<span class="kw">let</span> result = ai.<span class="fn">sentiment</span>(<span class="str">"This is amazing!"</span>)
+<span class="kw">let</span> words  = ai.<span class="fn">keywords</span>(text, <span class="num">5</span>)
+<span class="kw">let</span> summary= ai.<span class="fn">summarize</span>(text, <span class="num">2</span>)</pre>
+
+  <h2 id="shell">untold.shell — System</h2>
+  <pre><span class="kw">use</span> untold.shell
+
+<span class="kw">let</span> r = shell.<span class="fn">run</span>(<span class="str">"ls -la"</span>)
+<span class="fn">say</span>(r.out)
+<span class="fn">say</span>(shell.<span class="fn">platform</span>())
+<span class="fn">say</span>(shell.<span class="fn">env</span>(<span class="str">"HOME"</span>))</pre>
+
+  <h2 id="hack">untold.hack — Security</h2>
+  <pre><span class="kw">use</span> untold.hack
+
+<span class="fn">say</span>(hack.<span class="fn">sha256</span>(<span class="str">"password"</span>))
+<span class="fn">say</span>(hack.<span class="fn">b64_encode</span>(<span class="str">"hello"</span>))
+<span class="fn">say</span>(hack.<span class="fn">port_scan</span>(<span class="str">"localhost"</span>, <span class="num">80</span>, <span class="num">100</span>))</pre>
+
+  <h2 id="net">untold.net — Network</h2>
+  <pre><span class="kw">use</span> untold.net
+
+<span class="kw">let</span> open = net.<span class="fn">port_open</span>(<span class="str">"google.com"</span>, <span class="num">443</span>)
+<span class="kw">let</span> ip   = net.<span class="fn">resolve</span>(<span class="str">"google.com"</span>)
+<span class="fn">say</span>(net.<span class="fn">my_ip</span>())</pre>
+
+  <h2 id="packages">Package Manager</h2>
+  <pre>untold install colors
+untold install uuid dotenv crypto
+untold remove colors
+untold list
+untold search crypto</pre>
+
+  <h2 id="build">Building</h2>
+  <pre>untold build                      # Python script
+untold build --target binary      # Standalone binary
+untold build --optimize 2         # Max optimization</pre>
+
+  <h2 id="templates">Project Templates</h2>
+  <table>
+    <tr><th>Template</th><th>Description</th></tr>
+    <tr><td>app</td><td>General purpose application</td></tr>
+    <tr><td>web</td><td>HTTP web server</td></tr>
+    <tr><td>ai</td><td>AI / ML project</td></tr>
+    <tr><td>hack</td><td>Security toolkit</td></tr>
+    <tr><td>cli</td><td>Command line tool</td></tr>
+    <tr><td>script</td><td>Automation script</td></tr>
+  </table>
+</main>
+</div>
+</body>
+</html>
