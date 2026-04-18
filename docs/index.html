@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Untold Lang — The Language Without Limits</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0d0d;
+      --bg2:      #141414;
+      --bg3:      #1a1a1a;
+      --border:   #2a2a2a;
+      --purple:   #a78bfa;
+      --teal:     #34d399;
+      --amber:    #fbbf24;
+      --coral:    #f87171;
+      --blue:     #60a5fa;
+      --text:     #e5e5e5;
+      --muted:    #888;
+      --code-bg:  #111;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+    .logo { font-size: 1.2rem; font-weight: 700; color: var(--purple); letter-spacing: 0.05em; }
+    .logo span { color: var(--teal); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--purple);
+      color: #fff !important;
+      padding: 0.4rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #1a1040;
+      color: var(--purple);
+      border: 1px solid #3d2fa0;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--purple);
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--purple); }
+
+    /* CODE PREVIEW */
+    .code-preview {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 680px;
+      margin: 3rem auto;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .code-preview::before {
+      content: "main.ut";
+      position: absolute;
+      top: 0.75rem;
+      right: 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: monospace;
+    }
+    .dots { display: flex; gap: 6px; margin-bottom: 1rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f56; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #27c93f; }
+    pre { font-family: "Fira Code", "Cascadia Code", monospace; font-size: 0.9rem; line-height: 1.8; overflow-x: auto; }
+    .kw  { color: #a78bfa; }
+    .fn  { color: #34d399; }
+    .str { color: #fbbf24; }
+    .cm  { color: #555; font-style: italic; }
+    .ty  { color: #60a5fa; }
+    .num { color: #f87171; }
+
+    /* FEATURES */
+    .section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      font-size: 1rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--purple); }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .feature-card p  { color: var(--muted); font-size: 0.9rem; }
+
+    /* USE CASES */
+    .use-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .use-case {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .use-case-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .use-case h4 { font-size: 0.95rem; color: var(--text); }
+    .use-case p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* INSTALL */
+    .install-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .install-cmd {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      font-family: monospace;
+      font-size: 1rem;
+      color: var(--teal);
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .install-cmd:hover { border-color: var(--teal); }
+    .copy-hint { font-size: 0.75rem; color: var(--muted); }
+
+    /* PLAYGROUND CTA */
+    .playground-cta {
+      background: linear-gradient(135deg, #1a1040, #0d2020);
+      border: 1px solid #2a2040;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin: 2rem auto;
+      max-width: 700px;
+    }
+    .playground-cta h2 { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .playground-cta p  { color: var(--muted); margin-bottom: 1.5rem; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--purple); text-decoration: none; }
+
+    /* STATS */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin: 3rem 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-num  { font-size: 2rem; font-weight: 700; color: var(--purple); }
+    .stat-lbl  { font-size: 0.85rem; color: var(--muted); }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .hero { padding: 4rem 1rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Untold<span>Lang</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#usecases">Use Cases</a></li>
+    <li><a href="playground.html">Playground</a></li>
+    <li><a href="docs.html">Docs</a></li>
+    <li><a href="https://github.com/untold-lang/untold" target="_blank">GitHub</a></li>
+    <li><a href="playground.html" class="nav-cta">Try Now</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">v0.1.0 — Now Available</div>
+  <h1>The Language<br/><span class="grad">Without Limits</span></h1>
+  <p>Untold Lang is a powerful, expressive programming language built for AI, Web, Apps, Scripting, Security and more — all with one clean syntax.</p>
+  <div class="hero-btns">
+    <a href="playground.html" class="btn-primary">Try in Browser</a>
+    <a href="docs.html" class="btn-secondary">Read the Docs</a>
+  </div>
+</section>
+
+<div class="code-preview">
+  <div class="dots">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+  </div>
+  <pre><span class="kw">use</span> untold.ai
+<span class="kw">use</span> untold.web
+
+<span class="kw">start</span> <span class="fn">main</span>() {
+    <span class="cm">// AI-powered web scraper in 8 lines</span>
+    <span class="kw">let</span> res      = http.<span class="fn">get</span>(<span class="str">"https://example.com"</span>)
+    <span class="kw">let</span> keywords = ai.<span class="fn">keywords</span>(res.body, <span class="num">5</span>)
+    <span class="kw">let</span> mood     = ai.<span class="fn">sentiment</span>(res.body)
+
+    <span class="fn">say</span>(<span class="str">"Keywords: "</span> + <span class="fn">text</span>(keywords))
+    <span class="fn">say</span>(<span class="str">"Sentiment: "</span> + mood.label)
+}</pre>
+</div>
+
+<div class="stats-row">
+  <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">stdlib modules</div></div>
+  <div class="stat-item"><div class="stat-num">6</div><div class="stat-lbl">project templates</div></div>
+  <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">platforms supported</div></div>
+  <div class="stat-item"><div class="stat-num">.ut</div><div class="stat-lbl">file extension</div></div>
+</div>
+
+<section class="section" id="features">
+  <h2 class="section-title">Everything you need</h2>
+  <p class="section-sub">One language. Every use case.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Clean syntax</h3>
+      <p>Readable, expressive code with unique keywords like <code>start</code>, <code>say</code>, <code>lock</code> and <code>wait</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI built-in</h3>
+      <p>Sentiment analysis, keyword extraction, text similarity and LLM API calls via <code>untold.ai</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>Web ready</h3>
+      <p>HTTP GET/POST, JSON APIs, web servers and downloads out of the box with <code>untold.web</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>Security tools</h3>
+      <p>Port scanning, hashing, encoding, banner grabbing and recon via <code>untold.hack</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Package manager</h3>
+      <p>Install packages with <code>untold install</code>. Scaffold projects with <code>untold new</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥️</div>
+      <h3>Cross-platform</h3>
+      <p>Runs on Linux, Windows and macOS. Compile to standalone binary with <code>untold build</code>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔧</div>
+      <h3>VS Code extension</h3>
+      <p>Syntax highlighting, snippets, IntelliSense and a run button — all built in.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <h3>Async native</h3>
+      <p>First-class async support with <code>async fn</code> and <code>wait</code> for concurrent programs.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="usecases">
+  <h2 class="section-title">Build anything</h2>
+  <p class="section-sub">Untold Lang is designed to handle every domain.</p>
+  <div class="use-cases">
+    <div class="use-case">
+      <div class="use-case-icon">🤖</div>
+      <h4>AI & ML</h4>
+      <p>Sentiment, NLP, model calls</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🌐</div>
+      <h4>Web Apps</h4>
+      <p>HTTP servers, REST APIs</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">📱</div>
+      <h4>Mobile & Desktop</h4>
+      <p>Cross-platform apps</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🔐</div>
+      <h4>Security</h4>
+      <p>Ethical hacking tools</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">⚙️</div>
+      <h4>Scripting</h4>
+      <p>Automation & DevOps</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-icon">🎮</div>
+      <h4>Games</h4>
+      <p>Logic & game engines</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="install-section">
+    <h2 style="margin-bottom:0.5rem">Get started in seconds</h2>
+    <p style="color:var(--muted);margin-bottom:1.5rem">Install Untold Lang on Linux, Windows or macOS</p>
+    <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install untold-lang')">
+      <span>pip install untold-lang</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+    <div class="install-cmd" onclick="navigator.clipboard.writeText('untold new my-app\ncd my-app\nuntold run main.ut')">
+      <span>untold new my-app &amp;&amp; cd my-app &amp;&amp; untold run main.ut</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="playground-cta">
+    <h2>Try Untold Lang in your browser</h2>
+    <p>No install needed. Write and run .ut code instantly in the online playground.</p>
+    <a href="playground.html" class="btn-primary">Open Playground</a>
+  </div>
+</section>
+
+<footer>
+  <p>Built with passion by the Untold Lang team.</p>
+  <p style="margin-top:0.5rem">
+    <a href="docs.html">Docs</a> &nbsp;·&nbsp;
+    <a href="playground.html">Playground</a> &nbsp;·&nbsp;
+    <a href="https://github.com/untold-lang/untold">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/untold-lang/untold/issues">Issues</a>
+  </p>
+  <p style="margin-top:1rem;color:#444">Untold Lang v0.1.0 — The Language Without Limits</p>
+</footer>
+
+</body>
+</html>

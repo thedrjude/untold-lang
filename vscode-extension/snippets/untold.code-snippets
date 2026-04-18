@@ -1,0 +1,158 @@
+{
+  "Start Block": {
+    "prefix": "start",
+    "body": [
+      "start main() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Untold Lang entry point"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      "fn ${1:name}(${2:params}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define a function"
+  },
+  "Async Function": {
+    "prefix": "afn",
+    "body": [
+      "async fn ${1:name}(${2:params}) {",
+      "\twait ${3:result} = $0",
+      "}"
+    ],
+    "description": "Define an async function"
+  },
+  "Function with return": {
+    "prefix": "fnr",
+    "body": [
+      "fn ${1:name}(${2:params}) -> ${3:num} {",
+      "\treturn $0",
+      "}"
+    ],
+    "description": "Function with return type"
+  },
+  "Variable": {
+    "prefix": "let",
+    "body": ["let ${1:name} = $0"],
+    "description": "Declare a variable"
+  },
+  "Constant": {
+    "prefix": "lock",
+    "body": ["lock ${1:name} = $0"],
+    "description": "Declare a constant"
+  },
+  "If statement": {
+    "prefix": "if",
+    "body": [
+      "if ${1:condition} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "If else": {
+    "prefix": "ife",
+    "body": [
+      "if ${1:condition} {",
+      "\t$2",
+      "} else {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If else statement"
+  },
+  "If elif else": {
+    "prefix": "ifee",
+    "body": [
+      "if ${1:condition} {",
+      "\t$2",
+      "} elif ${3:condition} {",
+      "\t$4",
+      "} else {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If elif else statement"
+  },
+  "Loop": {
+    "prefix": "loop",
+    "body": [
+      "loop ${1:i} in ${2:0}..${3:10} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Range loop"
+  },
+  "While": {
+    "prefix": "while",
+    "body": [
+      "while ${1:condition} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "Class": {
+    "prefix": "class",
+    "body": [
+      "class ${1:Name} {",
+      "\t${2:field} : ${3:text}",
+      "",
+      "\tfn ${4:method}() {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "Define a class"
+  },
+  "Try catch": {
+    "prefix": "try",
+    "body": [
+      "try {",
+      "\t$1",
+      "} catch ${2:err} {",
+      "\tsay(${2:err}.msg)",
+      "} finally {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Try catch finally"
+  },
+  "Say": {
+    "prefix": "say",
+    "body": ["say($0)"],
+    "description": "Print to console"
+  },
+  "Use module": {
+    "prefix": "use",
+    "body": ["use untold.${1|ai,web,app,net,shell,hack,fs,db|}"],
+    "description": "Import an Untold module"
+  },
+  "AI module": {
+    "prefix": "ai",
+    "body": [
+      "use untold.ai",
+      "",
+      "start main() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Untold AI starter"
+  },
+  "Web module": {
+    "prefix": "web",
+    "body": [
+      "use untold.web",
+      "",
+      "start main() {",
+      "\tlet res = http.get(\"${1:https://example.com}\")",
+      "\tsay(res.body)",
+      "}"
+    ],
+    "description": "Untold web starter"
+  }
+}
