@@ -4,9 +4,9 @@
 
 **The Language Without Limits**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-a78bfa)](https://github.com/untold-lang/untold)
+[![Version](https://img.shields.io/badge/version-0.1.0-a78bfa)](https://github.com/thedrjude/untold-lang.git)
 [![License](https://img.shields.io/badge/license-MIT-34d399)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-60a5fa)](https://github.com/untold-lang/untold)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-60a5fa)](https://github.com/thedrjude/untold-lang.git)
 
 [Website](https://untold-lang.github.io) · [Playground](https://untold-lang.github.io/playground.html) · [Docs](https://untold-lang.github.io/docs.html)
 
