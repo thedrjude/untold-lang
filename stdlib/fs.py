@@ -1,14 +1,15 @@
+import glob
+import json
 import os
 import shutil
-import json
-import glob
+
 
 class UntoldFS:
     """untold.fs — File system module"""
 
     @staticmethod
     def read(path):
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             return f.read()
 
     @staticmethod
@@ -78,7 +79,7 @@ class UntoldFS:
 
     @staticmethod
     def read_json(path):
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod

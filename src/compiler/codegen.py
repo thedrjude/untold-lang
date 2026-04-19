@@ -1,7 +1,7 @@
-import os
-import sys
-import json
 import base64
+import json
+import os
+
 
 class CodeGen:
     """
@@ -35,7 +35,7 @@ class CodeGen:
         for rel_path in self.RUNTIME_MODULES:
             abs_path = os.path.join(self.project_root, rel_path)
             if os.path.exists(abs_path):
-                with open(abs_path, "r", encoding="utf-8") as f:
+                with open(abs_path, encoding="utf-8") as f:
                     modules[rel_path] = f.read()
 
         # Build the bootstrap script

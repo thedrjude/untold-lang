@@ -1,5 +1,5 @@
 import os
-import re
+
 
 class Bundler:
     """
@@ -26,7 +26,7 @@ class Bundler:
         if not os.path.exists(abs_path):
             raise FileNotFoundError(f"[Untold Bundler] File not found: {abs_path}")
 
-        with open(abs_path, "r", encoding="utf-8") as f:
+        with open(abs_path, encoding="utf-8") as f:
             source = f.read()
 
         for line in source.splitlines():

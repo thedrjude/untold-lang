@@ -1,14 +1,14 @@
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.lexer.lexer             import Lexer
-from src.parser.parser           import Parser
+from cli.config import init_config, load_config, save_config
+from cli.packages import pkg_install, pkg_install_all, pkg_list, pkg_remove, pkg_search
+from cli.scaffold import TEMPLATES, scaffold_project
 from src.interpreter.interpreter import Interpreter
-from cli.config                  import load_config, save_config, init_config, find_project_root
-from cli.packages                import pkg_install, pkg_remove, pkg_list, pkg_search, pkg_install_all
-from cli.scaffold                import scaffold_project, TEMPLATES
+from src.lexer.lexer import Lexer
+from src.parser.parser import Parser
 
 VERSION = "0.1.0"
 
@@ -30,7 +30,7 @@ def cmd_run(filepath, args=None):
         print(f"[Untold] Error: File '{filepath}' not found")
         sys.exit(1)
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         source = f.read()
 
     try:
@@ -55,7 +55,7 @@ def cmd_check(filepath):
         print(f"[Untold] Error: File '{filepath}' not found")
         sys.exit(1)
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         source = f.read()
 
     try:
@@ -157,7 +157,7 @@ def cmd_info():
     if deps:
         print(f"  Deps    : {', '.join(f'{k}@{v}' for k,v in deps.items())}")
     else:
-        print(f"  Deps    : none")
+        print("  Deps    : none")
 
 def cmd_run_script(script_name):
     cfg = load_config()

@@ -1,15 +1,24 @@
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from cli.commands import (
-    cmd_run, cmd_check, cmd_new, cmd_init,
-    cmd_install, cmd_remove, cmd_list_packages,
-    cmd_search, cmd_info, cmd_version, cmd_help,
-    cmd_run_script, VERSION
-)
 from cli.build import cmd_build, cmd_run_binary
+from cli.commands import (
+    VERSION,
+    cmd_check,
+    cmd_help,
+    cmd_info,
+    cmd_init,
+    cmd_install,
+    cmd_list_packages,
+    cmd_new,
+    cmd_remove,
+    cmd_run,
+    cmd_search,
+    cmd_version,
+)
+
 
 def main():
     args    = sys.argv[1:]

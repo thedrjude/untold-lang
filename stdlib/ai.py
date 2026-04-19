@@ -1,6 +1,7 @@
 import json
 import re
 
+
 class UntoldAI:
     """untold.ai — AI & ML module"""
 
@@ -178,7 +179,7 @@ class UntoldAI:
     @staticmethod
     def load_csv(path):
         import csv
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             return list(reader)
 

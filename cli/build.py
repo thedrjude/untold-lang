@@ -1,15 +1,15 @@
 import os
-import sys
 import shutil
-import subprocess
 import stat
+import subprocess
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.compiler.bundler   import Bundler
-from src.compiler.codegen   import CodeGen
+from cli.config import load_config
+from src.compiler.bundler import Bundler
+from src.compiler.codegen import CodeGen
 from src.compiler.optimizer import Optimizer
-from cli.config             import load_config
 
 BUILD_DIR = "dist"
 
@@ -48,13 +48,13 @@ def cmd_build(args):
     print(f"[Untold Build] Optimize: level {optimize}")
 
     # Step 1 — Bundle
-    print(f"[Untold Build] Bundling source files...")
+    print("[Untold Build] Bundling source files...")
     bundler = Bundler(entry)
     bundled = bundler.bundle()
     print(f"[Untold Build] Bundled {len(bundler.loaded)} file(s)")
 
     # Step 2 — Optimize
-    print(f"[Untold Build] Optimizing...")
+    print("[Untold Build] Optimizing...")
     opt    = Optimizer(bundled)
     source = opt.optimize(level=optimize)
     stats  = opt.stats()
@@ -87,7 +87,7 @@ def _make_executable_script(py_path, name):
     """Make the .py bootstrap directly executable."""
     sh_path = os.path.join(BUILD_DIR, name)
     with open(sh_path, "w") as f:
-        f.write(f"#!/usr/bin/env python3\n")
+        f.write("#!/usr/bin/env python3\n")
         with open(py_path) as src:
             # Skip the shebang already in py file
             lines = src.readlines()
@@ -106,7 +106,7 @@ def _build_binary(py_path, name, platform="linux"):
         print("[Untold Build] Install it: pip install pyinstaller")
         return False
 
-    print(f"[Untold Build] Compiling to standalone binary with PyInstaller...")
+    print("[Untold Build] Compiling to standalone binary with PyInstaller...")
 
     out_dir  = os.path.join(BUILD_DIR, "bin")
     os.makedirs(out_dir, exist_ok=True)
@@ -136,7 +136,7 @@ def _build_binary(py_path, name, platform="linux"):
         return False
 
 def _list_dist():
-    print(f"\n[Untold Build] Build output:")
+    print("\n[Untold Build] Build output:")
     for root, dirs, files in os.walk(BUILD_DIR):
         # Skip hidden work dirs
         dirs[:] = [d for d in dirs if not d.startswith(".")]

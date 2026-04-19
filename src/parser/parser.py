@@ -1,5 +1,7 @@
 from src.lexer.tokens import TokenType
+
 from .ast_nodes import *
+
 
 class Parser:
     def __init__(self, tokens):

@@ -1,7 +1,8 @@
-import subprocess
 import os
-import sys
 import platform
+import subprocess
+import sys
+
 
 class UntoldShell:
     """untold.shell — Scripting & system module"""
