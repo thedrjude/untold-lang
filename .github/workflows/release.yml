@@ -6,11 +6,10 @@ on:
       - 'v*'
 
 jobs:
-  build-and-publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -20,34 +19,25 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install and build
-      run: |
-        python -m pip install --upgrade pip build twine
-        python -m build
+    - name: Install build tools
+      run: pip install --upgrade pip build twine
 
-    - name: Create GitHub Release
+    - name: Build
+      run: python -m build
+
+    - name: Create Release
       run: |
-        VERSION=${GITHUB_REF#refs/tags/}
-        gh release create $VERSION \
+        VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')
+        gh release create "$VERSION" \
           --title "Untold Lang $VERSION" \
-          --notes "Release $VERSION" \
+          --generate-release-notes \
           dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Publish to Test PyPI
-      if: false
+    - name: Upload to PyPI
       run: |
-        twine upload -r testpypi dist/*
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-
-    - name: Publish to PyPI
-      run: |
-        echo "Publishing to PyPI..."
-        echo "Token length: ${# secrets.PYPI_TOKEN}"
-        twine upload --non-interactive dist/*
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        twine upload --non-interactive dist/* \
+        -u __token__ \
+        -p ${{ secrets.PYPI_TOKEN }}
+      continue-on-error: true
