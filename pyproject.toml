@@ -23,10 +23,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "Topic :: Software Development :: Interpreters",
-    "Topic :: Software Development :: Compilers",
-    "Topic :: Software Development :: Programming Languages",
-    "Topic :: Software Development :: Libraries",
 ]
 keywords = ["programming-language", "interpreter", "compiler", "ai", "scripting", "web", "security"]
 requires-python = ">=3.10"
