@@ -70,4 +70,4 @@ untold help                     # All commands
 
 ## License
 
-MIT — Built with passion by the Untold Lang team.
+MIT — Built with passion by the thedrjude.
