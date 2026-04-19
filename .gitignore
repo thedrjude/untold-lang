@@ -1,18 +1,43 @@
+# Byte-compiled / optimized
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
 *.egg-info/
 dist/
 build/
 .eggs/
 *.egg
+MANIFEST
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
-.env
-venv/
-.venv/
-*.ut
-!tests/samples/*.ut
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Build outputs
+untold_lang.egg-info/
+
+# VS Code extension packages
 *.vsix
+
+# Local config (secrets)
+.env
+.pypirc
