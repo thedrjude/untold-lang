@@ -2,8 +2,8 @@
   "name": "untold-lang",
   "displayName": "Untold Lang",
   "description": "Syntax highlighting, snippets and run support for Untold Lang (.ut files)",
-  "version": "0.1.0",
-  "publisher": "untold",
+  "version": "0.2.4",
+  "publisher": "thedrjude",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -16,6 +16,13 @@
   ],
   "main": "./extension.js",
   "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thedrjude/untold-lang"
+  },
+  "bugs": {
+    "url": "https://github.com/thedrjude/untold-lang/issues"
+  },
   "contributes": {
     "languages": [
       {
