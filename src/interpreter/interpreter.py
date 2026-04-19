@@ -77,7 +77,15 @@ class Interpreter:
         def builtin_range(start, end):
             return list(range(int(start), int(end)))
 
+        async def builtin_wait(promise):
+            if asyncio.iscoroutine(promise):
+                return await promise
+            if hasattr(promise, '__await__'):
+                return promise.__await__()
+            return promise
+
         g.set("say",   builtin_say)
+        g.set("wait",  builtin_wait)
         g.set("ask",   builtin_ask)
         g.set("len",   builtin_len)
         g.set("type",  builtin_type)
@@ -307,6 +315,15 @@ class Interpreter:
 
         for i, (pname, _ptype) in enumerate(node.params):
             local.set(pname, args[i] if i < len(args) else None)
+
+        if node.is_async:
+            async def run_async():
+                try:
+                    self.exec_block(node.body, local)
+                except ReturnSignal as r:
+                    return r.value
+                return None
+            return asyncio.run(run_async())
 
         try:
             self.exec_block(node.body, local)

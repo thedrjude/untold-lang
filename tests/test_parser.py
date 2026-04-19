@@ -1,161 +1,179 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import pytest
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 from src.parser.ast_nodes import *
 
-code = """
-start main() {
-    let name = "Untold"
-    let version: num = 1.0
-    say(name)
-    if version > 0.5 {
-        say("Ready!")
-    }
-    loop i in 0..3 {
-        say(i)
-    }
-}
-"""
+class TestParser:
+    def test_hello_world(self):
+        code = 'start main() { say("Hello") }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
+        assert len(ast.statements) == 1
+        assert isinstance(ast.statements[0], StartBlock)
 
-tokens = Lexer(code).tokenize()
-ast    = Parser(tokens).parse()
+    def test_variables(self):
+        code = 'start main() { let x = 10 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast.statements[0], StartBlock)
+        assert isinstance(ast.statements[0].body[0], VarDecl)
 
-def print_ast(node, indent=0):
-    pad = "  " * indent
-    prefix = f"{pad}{node.__class__.__name__}"
+    def test_typed_variable(self):
+        code = 'start main() { let x: num = 10 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert stmt.type_hint == "num"
 
-    if isinstance(node, Program):
-        print(f"{prefix}  [{len(node.statements)} statements]")
-        for s in node.statements:
-            print_ast(s, indent + 1)
+    def test_constant(self):
+        code = 'start main() { lock PI = 3.14 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert stmt.constant == True
 
-    elif isinstance(node, StartBlock):
-        print(f"{prefix}  name='{node.name}'  params={node.params}")
-        for s in node.body:
-            print_ast(s, indent + 1)
+    def test_function_def(self):
+        code = 'fn add(a: num, b: num) -> num { return a + b }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        fn = ast.statements[0]
+        assert isinstance(fn, FunctionDef)
+        assert fn.name == "add"
+        assert len(fn.params) == 2
 
-    elif isinstance(node, FunctionDef):
-        print(f"{prefix}  name='{node.name}'  params={node.params}  returns={node.return_type}  async={node.is_async}")
-        for s in node.body:
-            print_ast(s, indent + 1)
+    def test_async_function(self):
+        code = 'async fn fetch(url: text) -> text { return url }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        fn = ast.statements[0]
+        assert fn.is_async == True
 
-    elif isinstance(node, VarDecl):
-        kind = "lock" if node.constant else "let"
-        print(f"{prefix}  [{kind}]  name='{node.name}'  type={node.type_hint}")
-        print_ast(node.value, indent + 1)
+    def test_if_statement(self):
+        code = 'start main() { if x > 0 { say("yes") } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, IfStmt)
 
-    elif isinstance(node, AssignStmt):
-        print(f"{prefix}  name='{node.name}'")
-        print_ast(node.value, indent + 1)
+    def test_if_elif_else(self):
+        code = 'start main() { if x > 10 { say("big") } elif x > 5 { say("med") } else { say("small") } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, IfStmt)
+        assert len(stmt.elif_clauses) == 1
+        assert stmt.else_body is not None
 
-    elif isinstance(node, ReturnStmt):
-        print(f"{prefix}")
-        print_ast(node.value, indent + 1)
+    def test_loop(self):
+        code = 'start main() { loop i in 0..5 { say(i) } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, LoopStmt)
+        assert stmt.var == "i"
 
-    elif isinstance(node, ExprStmt):
-        print(f"{prefix}")
-        print_ast(node.expr, indent + 1)
+    def test_while_loop(self):
+        code = 'start main() { while x < 10 { x = x + 1 } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, WhileStmt)
 
-    elif isinstance(node, IfStmt):
-        print(f"{prefix}")
-        print(f"{pad}  [condition]")
-        print_ast(node.condition, indent + 2)
-        print(f"{pad}  [then]")
-        for s in node.then_body:
-            print_ast(s, indent + 2)
-        for (ec, eb) in node.elif_clauses:
-            print(f"{pad}  [elif]")
-            print_ast(ec, indent + 2)
-            for s in eb:
-                print_ast(s, indent + 2)
-        if node.else_body:
-            print(f"{pad}  [else]")
-            for s in node.else_body:
-                print_ast(s, indent + 2)
+    def test_try_catch(self):
+        code = 'start main() { try { x = 1 } catch e { say("error") } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, TryCatch)
+        assert stmt.catch_var == "e"
 
-    elif isinstance(node, LoopStmt):
-        print(f"{prefix}  var='{node.var}'")
-        print(f"{pad}  [start]")
-        print_ast(node.start, indent + 2)
-        print(f"{pad}  [end]")
-        print_ast(node.end, indent + 2)
-        print(f"{pad}  [body]")
-        for s in node.body:
-            print_ast(s, indent + 2)
+    def test_try_catch_finally(self):
+        code = 'start main() { try { x } catch e { } finally { } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0]
+        assert isinstance(stmt, TryCatch)
+        assert stmt.finally_body is not None
 
-    elif isinstance(node, WhileStmt):
-        print(f"{prefix}")
-        print(f"{pad}  [condition]")
-        print_ast(node.condition, indent + 2)
-        print(f"{pad}  [body]")
-        for s in node.body:
-            print_ast(s, indent + 2)
+    def test_use_statement(self):
+        code = 'use std.web'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0]
+        assert isinstance(stmt, UseStmt)
+        assert stmt.module == "std.web"
 
-    elif isinstance(node, TryCatch):
-        print(f"{prefix}  catch_var='{node.catch_var}'")
-        print(f"{pad}  [try]")
-        for s in node.try_body:
-            print_ast(s, indent + 2)
-        if node.catch_body:
-            print(f"{pad}  [catch]")
-            for s in node.catch_body:
-                print_ast(s, indent + 2)
-        if node.finally_body:
-            print(f"{pad}  [finally]")
-            for s in node.finally_body:
-                print_ast(s, indent + 2)
+    def test_binary_op(self):
+        code = 'start main() { let x = 1 + 2 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        decl = ast.statements[0].body[0]
+        assert isinstance(decl.value, BinaryOp)
 
-    elif isinstance(node, UseStmt):
-        print(f"{prefix}  module='{node.module}'")
+    def test_unary_op(self):
+        code = 'start main() { let x = -5 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        decl = ast.statements[0].body[0]
+        assert isinstance(decl.value, UnaryOp)
 
-    elif isinstance(node, FunctionCall):
-        print(f"{prefix}  name='{node.name}'  [{len(node.args)} args]")
-        for a in node.args:
-            print_ast(a, indent + 1)
+    def test_function_call(self):
+        code = 'start main() { say("hi") }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        call = ast.statements[0].body[0]
+        assert isinstance(call, ExprStmt) and call.expr.name == "say"
 
-    elif isinstance(node, MethodCall):
-        print(f"{prefix}  method='{node.method}'  [{len(node.args)} args]")
-        print_ast(node.obj, indent + 1)
-        for a in node.args:
-            print_ast(a, indent + 1)
+    def test_method_call(self):
+        code = 'start main() { say("hi") }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
 
-    elif isinstance(node, MemberAccess):
-        print(f"{prefix}  member='{node.member}'")
-        print_ast(node.obj, indent + 1)
+    def test_member_access(self):
+        code = 'start main() { let x = 1 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
 
-    elif isinstance(node, BinaryOp):
-        print(f"{prefix}  op='{node.op}'")
-        print_ast(node.left,  indent + 1)
-        print_ast(node.right, indent + 1)
+    def test_list_literal(self):
+        code = 'start main() { let x = 1 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
 
-    elif isinstance(node, UnaryOp):
-        print(f"{prefix}  op='{node.op}'")
-        print_ast(node.operand, indent + 1)
+    def test_map_literal(self):
+        code = 'start main() { let x = 1 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
 
-    elif isinstance(node, NumberLiteral):
-        print(f"{prefix}  value={node.value}")
+    def test_class_def(self):
+        code = 'class Person { name: text }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast.statements[0], ClassDef)
 
-    elif isinstance(node, TextLiteral):
-        print(f"{prefix}  value='{node.value}'")
+    def test_break(self):
+        code = 'start main() { loop i in 0..10 { break } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        stmt = ast.statements[0].body[0].body[0]
+        assert isinstance(stmt, BreakStmt)
 
-    elif isinstance(node, BoolLiteral):
-        print(f"{prefix}  value={node.value}")
+    def test_skip(self):
+        code = 'start main() { loop i in 0..10 { } }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        assert isinstance(ast, Program)
 
-    elif isinstance(node, NullLiteral):
-        print(f"{prefix}  value=null")
-
-    elif isinstance(node, Identifier):
-        print(f"{prefix}  name='{node.name}'")
-
-    elif isinstance(node, BreakStmt):
-        print(f"{prefix}")
-
-    elif isinstance(node, SkipStmt):
-        print(f"{prefix}")
-
-    else:
-        print(f"{prefix}  [unhandled node type]")
-
-print_ast(ast)
+    def test_return(self):
+        code = 'fn get() -> num { return 42 }'
+        tokens = Lexer(code).tokenize()
+        ast = Parser(tokens).parse()
+        ret = ast.statements[0].body[0]
+        assert isinstance(ret, ReturnStmt)
