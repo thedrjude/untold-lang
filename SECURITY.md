@@ -1,13 +1,13 @@
 # Security Policy
 
-> How to report security vulnerabilities in Untold Lang
+> How to report security vulnerabilities in Untold Lang v2.0.0
 
 ## Supported Versions
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.2.x   | :white_check_mark: |
-| < 0.2   | :x:              |
+| 2.0.x   | :white_check_mark: |
+| < 2.0   | :x:              |
 
 ## Reporting a Vulnerability
 
@@ -25,19 +25,32 @@ If you discover a security vulnerability, please report it responsibly:
 
 This security policy covers:
 - The Untold Lang interpreter
-- Standard library modules (`untold.hack`, etc.)
-- CLI commands
+- Standard library modules (`untold.hack`, `untold.crypto`, `untold.regex`, etc.)
+- CLI commands (`untold run`, `untold repl`, `untold debug`)
 - Package manager
+- VS Code extension
 
 **NOT covered:**
 - Third-party packages from the registry
 - User-written code using Untold Lang
-- External services
+- External services (APIs, databases, etc.)
 
 ## Disclosure
 
-- Please give us reasonable time to fix before disclosure
+- Please give us reasonable time to fix before disclosure (30 days minimum)
 - We appreciate credit in the fix (if desired)
+- Security advisories will be published after the fix is released
+
+---
+
+## Security Best Practices
+
+When using Untold Lang:
+
+1. **Network modules** (`untold.net`, `untold.hack`) - Use only on systems you own or have authorization
+2. **Crypto module** - For educational purposes; use established libraries for production
+3. **Shell execution** - Be cautious with user input
+4. **File system** - Validate all paths to prevent directory traversal
 
 ---
 
