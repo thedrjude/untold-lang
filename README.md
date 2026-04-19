@@ -4,11 +4,15 @@
 
 **The Language Without Limits**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-a78bfa)](https://github.com/thedrjude/untold-lang.git)
+[![Version](https://img.shields.io/pypi/v/untold-lang?style=flat&color=a78bfa)](https://pypi.org/project/untold-lang/)
 [![License](https://img.shields.io/badge/license-MIT-34d399)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-60a5fa)](https://github.com/thedrjude/untold-lang.git)
+[![Test Status](https://img.shields.io/github/actions/workflow/status/thedrjude/untold-lang/test?label=Tests)](https://github.com/thedrjude/untold-lang/actions)
+[![Test Coverage](https://img.shields.io/codecov/c/github/thedrjude/untold-lang?label=Coverage)](https://codecov.io/gh/thedrjude/untold-lang)
+[![Downloads](https://img.shields.io/pypi/dm/untold-lang?style=flat)](https://pypi.org/project/untold-lang/)
+[![Python Version](https://img.shields.io/pypi/pyversions/untold-lang)](https://pypi.org/project/untold-lang/)
 
-[Website](https://untold-lang.github.io) · [Playground](https://untold-lang.github.io/playground.html) · [Docs](https://untold-lang.github.io/docs.html)
+[Website](https://untold-lang.github.io) · [Playground](https://untold-lang.github.io/playground.html) · [Docs](https://untold-lang.github.io/docs.html) · [Discussions](https://github.com/thedrjude/untold-lang/discussions)
 
 </div>
 
