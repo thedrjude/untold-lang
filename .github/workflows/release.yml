@@ -8,27 +8,56 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        enable-cache: true
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
 
     - name: Build package
       run: |
-        uv venv .venv
-        source .venv/bin/activate
-        uv pip install build
-        python -m build --outdir dist
+        python -m build
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
+    - name: Upload Release Asset
+      uses: actions/upload-artifact@v4
       with:
-        files: dist/*
-        generate_release_notes: true
-        draft: false
+        name: dist
+        path: dist/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: .
+        sparse-checkout-cone-mode-mode: false
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Create GitHub Release
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/}
+        gh release create $VERSION \
+          --title "Untold Lang $VERSION" \
+          --notes "Release $VERSION" \
+          dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
