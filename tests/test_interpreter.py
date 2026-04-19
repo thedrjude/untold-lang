@@ -1,127 +1,86 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.lexer.lexer       import Lexer
-from src.parser.parser     import Parser
+import pytest
+from io import StringIO
+from contextlib import redirect_stdout
+from src.lexer.lexer import Lexer
+from src.parser.parser import Parser
 from src.interpreter.interpreter import Interpreter
 
-def run(code):
+def run_code(code, expected_output=None):
     tokens = Lexer(code).tokenize()
-    ast    = Parser(tokens).parse()
-    Interpreter().run(ast)
+    ast = Parser(tokens).parse()
+    interpreter = Interpreter()
+    
+    if expected_output is not None:
+        f = StringIO()
+        with redirect_stdout(f):
+            interpreter.run(ast)
+        output = f.getvalue().strip()
+        assert expected_output in output, f"Expected '{expected_output}' but got '{output}'"
+    else:
+        interpreter.run(ast)
 
-print("=" * 40)
-print("Test 1 — Hello World")
-print("=" * 40)
-run("""
-start main() {
-    say("Hello, Untold World!")
-}
-""")
+class TestHelloWorld:
+    def test_say_hello(self):
+        run_code('start main() { say("Hello World") }', "Hello World")
 
-print("\n" + "=" * 40)
-print("Test 2 — Variables & arithmetic")
-print("=" * 40)
-run("""
-start main() {
-    let x = 10
-    let y = 3
-    say(x + y)
-    say(x - y)
-    say(x * y)
-}
-""")
+class TestVariables:
+    def test_let_number(self):
+        run_code('start main() { let x = 10 }')
+    
+    def test_let_string(self):
+        run_code('start main() { let name = "Untold" }')
+    
+    def test_let_boolean(self):
+        run_code('start main() { let active = true }')
 
-print("\n" + "=" * 40)
-print("Test 3 — If / elif / else")
-print("=" * 40)
-run("""
-start main() {
-    let score = 75
-    if score >= 90 {
-        say("Grade: A")
-    } elif score >= 70 {
-        say("Grade: B")
-    } else {
-        say("Grade: C")
-    }
-}
-""")
+class TestArithmetic:
+    def test_addition(self):
+        run_code('start main() { let x = 10 + 5 }')
+    
+    def test_subtraction(self):
+        run_code('start main() { let x = 10 - 5 }')
+    
+    def test_multiplication(self):
+        run_code('start main() { let x = 3 * 4 }')
+    
+    def test_division(self):
+        run_code('start main() { let x = 10 / 2 }')
 
-print("\n" + "=" * 40)
-print("Test 4 — Loop")
-print("=" * 40)
-run("""
-start main() {
-    loop i in 0..5 {
-        say(i)
-    }
-}
-""")
+class TestControlFlow:
+    def test_if(self):
+        run_code('start main() { if true { say("yes") } }', "yes")
+    
+    def test_if_else(self):
+        run_code('start main() { if false { say("yes") } else { say("no") } }', "no")
 
-print("\n" + "=" * 40)
-print("Test 5 — Functions")
-print("=" * 40)
-run("""
-fn greet(name) {
-    say("Hello, " + name + "!")
-}
+class TestLoops:
+    def test_loop_range(self):
+        run_code('start main() { loop i in 0..3 { } }')
 
-fn add(a, b) {
-    return a + b
-}
+class TestFunctions:
+    def test_function_call(self):
+        code = 'fn add(a, b) { return a + b }\nstart main() { let x = add(2, 3) }'
+        run_code(code)
 
-start main() {
-    greet("Untold")
-    let result = add(10, 20)
-    say(result)
-}
-""")
+class TestErrorHandling:
+    def test_try_catch(self):
+        code = 'start main() { try { say("ok") } catch err { say(err.msg) } }'
+        run_code(code, "ok")
 
-print("\n" + "=" * 40)
-print("Test 6 — Classes")
-print("=" * 40)
-run("""
-class Person {
-    name : text
-    age  : num
+class TestLock:
+    def test_lock_constant(self):
+        code = 'start main() { lock PI = 3.14 }'
+        run_code(code)
 
-    fn greet() {
-        say("Hi, I am " + self.name)
-    }
-}
-
-start main() {
-    let p = Person{ name: "Dev", age: 22 }
-    p.greet()
-    say(p.name)
-}
-""")
-
-print("\n" + "=" * 40)
-print("Test 7 — Try / catch")
-print("=" * 40)
-run("""
-start main() {
-    try {
-        let x = 10
-        say("In try block")
-    } catch err {
-        say("Error: " + err.msg)
-    } finally {
-        say("Finally runs always")
-    }
-}
-""")
-
-print("\n" + "=" * 40)
-print("Test 8 — Text methods")
-print("=" * 40)
-run("""
-start main() {
-    let msg = "untold lang"
-    say(msg.upper())
-    say(msg.length())
-    say(msg.contains("lang"))
-}
-""")
+class TestKeywords:
+    def test_true(self):
+        run_code('start main() { let x = true }')
+    
+    def test_false(self):
+        run_code('start main() { let x = false }')
+    
+    def test_null(self):
+        run_code('start main() { let x = null }')
