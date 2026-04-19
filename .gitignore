@@ -11,6 +11,7 @@ build/
 htmlcov/
 .env
 venv/
+.venv/
 *.ut
 !tests/samples/*.ut
 .DS_Store
