@@ -69,6 +69,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        sparse-checkout: .
+        sparse-checkout-cone-mode-mode: false
 
     - name: Download artifact
       uses: actions/download-artifact@v4
@@ -76,9 +79,8 @@ jobs:
         name: dist
         path: dist/
 
+    - name: Install twine
+      run: pip install twine
+
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_TOKEN }}
-        skip_existing: true
+      run: TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }} twine upload dist/*
