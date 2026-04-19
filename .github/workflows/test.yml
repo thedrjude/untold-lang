@@ -78,7 +78,6 @@ jobs:
       run: pip install build && python -m build
     
     - name: Publish to PyPI
-      if: secrets.PYPI_TOKEN != ''
+      env:
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_TOKEN }}
