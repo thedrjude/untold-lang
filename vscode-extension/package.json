@@ -1,6 +1,6 @@
 {
-  "name": "untold-lang",
-  "displayName": "Untold Lang",
+  "name": "untold",
+  "displayName": "Untold",
   "description": "Syntax highlighting, snippets and run support for Untold Lang (.ut files)",
   "version": "0.2.4",
   "publisher": "thedrjude",
