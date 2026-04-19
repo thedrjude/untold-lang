@@ -17,20 +17,16 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install pip
-      run: python -m ensurepip --upgrade
-
-    - name: Install build
-      run: pip install build --break-system-packages
-
     - name: Build package
-      run: python -m build
+      run: |
+        pip install build
+        python -m build --outdir dist
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         files: dist/*
         generate_release_notes: true
-        draft: true
+        draft: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
