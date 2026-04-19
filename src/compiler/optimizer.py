@@ -1,5 +1,6 @@
 import re
 
+
 class Optimizer:
     """
     Basic source optimizer for Untold Lang.

@@ -1,9 +1,6 @@
-import os
 import json
+import os
 import shutil
-import urllib.request
-import zipfile
-import tempfile
 
 PACKAGES_DIR  = os.path.join(os.path.expanduser("~"), ".untold", "packages")
 CACHE_DIR     = os.path.join(os.path.expanduser("~"), ".untold", "cache")

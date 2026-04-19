@@ -21,7 +21,7 @@ def load_config(path=None):
     cfg_path = path or os.path.join(os.getcwd(), CONFIG_FILE)
     if not os.path.exists(cfg_path):
         return None
-    with open(cfg_path, "r") as f:
+    with open(cfg_path) as f:
         return json.load(f)
 
 def save_config(config, path=None):

@@ -1,8 +1,8 @@
-import urllib.request
-import urllib.parse
-import urllib.error
 import json
-import threading
+import urllib.error
+import urllib.parse
+import urllib.request
+
 
 class UntoldWeb:
     """untold.web — HTTP, REST & web module"""
@@ -88,7 +88,7 @@ class UntoldWeb:
     @staticmethod
     def serve(port=8080, handler=None):
         """Start a simple HTTP server with a custom handler."""
-        from http.server import HTTPServer, BaseHTTPRequestHandler
+        from http.server import BaseHTTPRequestHandler, HTTPServer
 
         user_handler = handler
 

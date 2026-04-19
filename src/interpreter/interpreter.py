@@ -1,6 +1,9 @@
 import asyncio
+
 from src.parser.ast_nodes import *
+
 from .environment import Environment
+
 
 class ReturnSignal(Exception):
     def __init__(self, value): self.value = value
@@ -292,7 +295,7 @@ class Interpreter:
             if isinstance(obj, dict):
                 return obj.get(node.member)
             raise AttributeError(f"[Untold] Cannot access member '{node.member}'")
-       
+
         elif isinstance(node, ClassInstantiation):
             class_def = env.get(node.class_name)
             if not isinstance(class_def, ClassDef):
@@ -378,7 +381,8 @@ class Interpreter:
         raise AttributeError(f"[Untold] No method '{method}' on {type(obj).__name__}")
 
     def _load_module(self, module, env):
-            import sys, os
+            import os
+            import sys
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
             if module == "untold.fs":

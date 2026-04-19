@@ -1,6 +1,6 @@
 import socket
 import threading
-import json
+
 
 class UntoldNet:
     """untold.net — Network & socket module"""

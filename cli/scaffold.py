@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 TEMPLATES = {
     "app": {
@@ -156,22 +156,22 @@ def scaffold_project(template, name, author="", description="", path="."):
     }
     with open(os.path.join(root_dir, "untold.json"), "w") as f:
         json.dump(config, f, indent=2)
-    print(f"[untold]   created untold.json")
+    print("[untold]   created untold.json")
 
     # Write .gitignore
     with open(os.path.join(root_dir, ".gitignore"), "w") as f:
         f.write("__pycache__/\n.untold_cache/\n*.pyc\n.env\n")
-    print(f"[untold]   created .gitignore")
+    print("[untold]   created .gitignore")
 
     # Write README
     with open(os.path.join(root_dir, "README.md"), "w") as f:
         f.write(f"# {name}\n\n{description or tpl['desc']}\n\n")
-        f.write(f"## Run\n\n```bash\nuntold run main.ut\n```\n\n")
+        f.write("## Run\n\n```bash\nuntold run main.ut\n```\n\n")
         f.write(f"## Template\n\n`{template}`\n")
-    print(f"[untold]   created README.md")
+    print("[untold]   created README.md")
 
     print(f"\n[untold] Project '{name}' created successfully!")
-    print(f"[untold] To get started:")
+    print("[untold] To get started:")
     print(f"           cd {name}")
-    print(f"           untold run main.ut")
+    print("           untold run main.ut")
     return True

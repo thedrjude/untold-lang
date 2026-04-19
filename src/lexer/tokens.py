@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class TokenType(Enum):
     # Literals
     NUMBER      = auto()
@@ -51,7 +52,7 @@ class TokenType(Enum):
     EQ          = auto()   # =
     EQEQ        = auto()   # ==
     NEQ         = auto()   # !=
-    LT          = auto()   # 
+    LT          = auto()   #
     GT          = auto()   # >
     LTE         = auto()   # <=
     GTE         = auto()   # >=
