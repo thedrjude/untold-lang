@@ -40,11 +40,14 @@ untold run main.ut
 ## Features
 
 - Clean, readable syntax with unique keywords
-- 8 built-in standard library modules
-- Built-in AI, Web, Security, Shell, Network tools
+- List and map literals: `[1, 2, 3]`, `{"key": "value"}`
+- 11 built-in standard library modules
+- Built-in AI, Web, Security, Shell, Network, Regex, Time, Crypto tools
 - Package manager (`untold install`)
 - Project scaffolder (`untold new`)
 - Compile to standalone binary (`untold build --target binary`)
+- Interactive REPL: `untold repl` or `untold shell`
+- Debugger: `untold debug <file.ut>`
 - VS Code extension with syntax highlighting
 - Runs on Linux, Windows, macOS
 

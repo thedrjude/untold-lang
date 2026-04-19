@@ -10,7 +10,7 @@ from src.interpreter.interpreter import Interpreter
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
 
-VERSION = "0.1.0"
+VERSION = "2.0.0"
 
 def cmd_run(filepath, args=None):
     if not filepath:

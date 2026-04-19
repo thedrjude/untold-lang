@@ -303,6 +303,12 @@ class Interpreter:
             evaluated_fields = {k: self.eval(v, env) for k, v in node.fields.items()}
             return UntoldInstance(class_def, evaluated_fields)
 
+        elif isinstance(node, ListLiteral):
+            return [self.eval(e, env) for e in node.elements]
+
+        elif isinstance(node, MapLiteral):
+            return {k: self.eval(v, env) for k, v in node.pairs.items()}
+
         else:
             raise RuntimeError(f"[Untold] Unknown expression: {type(node).__name__}")
 
