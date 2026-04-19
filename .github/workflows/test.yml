@@ -9,25 +9,70 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+
     steps:
     - uses: actions/checkout@v4
-    
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        pip install pytest
+        pip install pytest-cov
+        pip install -e .
+
+    - name: Run tests with coverage
+      run: |
+        pytest tests/ -v --cov=src --cov=stdlib --cov-report=xml --cov-report=term-missing
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: untol-lang
+
+    - name: Run example program
+      run: |
+        echo 'start main() { say("Hello from Untold Lang!") }' > test.ut
+        untold run test.ut
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
-    
-    - name: Install
-      run: |
-        pip install pytest
-        pip install -e .
-    
-    - name: Run tests
-      run: |
-        pytest tests/ -v || true
-    
-    - name: Run example
-      run: |
-        echo 'start main() { say("Hello!") }' > test.ut
-        untold run test.ut
+        python-version: '3.13'
+
+    - name: Install dependencies
+      run: pip install ruff
+
+    - name: Run ruff linter
+      run: ruff check src/ cli/ stdlib/
+
+  type-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Install dependencies
+      run: pip install mypy
+
+    - name: Run mypy type checker
+      run: mypy src/ cli/ stdlib/ --ignore-missing-imports

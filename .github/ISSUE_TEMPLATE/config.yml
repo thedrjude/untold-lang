@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discussions
+    url: https://github.com/thedrjude/untold-lang/discussions
+    about: Ask questions and share ideas
+  - name: Discord Community
+    url: https://discord.gg/untold-lang
+    about: Join our community chat
