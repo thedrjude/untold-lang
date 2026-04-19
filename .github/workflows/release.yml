@@ -83,4 +83,11 @@ jobs:
       run: pip install twine
 
     - name: Publish to PyPI
-      run: TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }} twine upload dist/*
+      run: |
+        echo "Checking for PyPI token..."
+        if [ -z "${{ secrets.PYPI_TOKEN }}" ]; then
+          echo "ERROR: PYPI_TOKEN secret not found!"
+          exit 1
+        fi
+        echo "Publishing to PyPI..."
+        TWINE_PASSWORD="${{ secrets.PYPI_TOKEN }}" twine upload dist/* --verbose
