@@ -156,3 +156,13 @@ class ClassInstantiation(Node):
     def __init__(self, class_name, fields):
         self.class_name = class_name
         self.fields     = fields  # dict of name -> expr node
+
+class ListLiteral(Node):
+    """[1, 2, 3]"""
+    def __init__(self, elements):
+        self.elements = elements  # list of expr nodes
+
+class MapLiteral(Node):
+    """{"name": "Dev", "age": 22}"""
+    def __init__(self, pairs):
+        self.pairs = pairs  # dict of key -> expr node (keys are strings)

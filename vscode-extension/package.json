@@ -1,15 +1,16 @@
 {
   "name": "untold",
   "displayName": "Untold",
-  "description": "Syntax highlighting, snippets and run support for Untold Lang (.ut files)",
-  "version": "0.2.4",
+  "description": "Untold Lang v2.0.0 - The Language Without Limits. Syntax highlighting, REPL, debugger and run support for Untold Lang (.ut files)",
+  "version": "2.0.0",
   "publisher": "thedrjude",
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
     "Programming Languages",
-    "Snippets"
+    "Snippets",
+    "Debuggers"
   ],
   "activationEvents": [
     "onLanguage:untold"
@@ -59,6 +60,14 @@
       {
         "command": "untold.checkFile",
         "title": "Untold: Check Syntax"
+      },
+      {
+        "command": "untold.startRepl",
+        "title": "Untold: Start REPL"
+      },
+      {
+        "command": "untold.startDebugger",
+        "title": "Untold: Start Debugger"
       }
     ],
     "menus": {
@@ -79,6 +88,16 @@
           "command": "untold.checkFile",
           "when": "resourceExtname == .ut",
           "group": "untold"
+        },
+        {
+          "command": "untold.startRepl",
+          "when": "resourceExtname == .ut",
+          "group": "untold@1"
+        },
+        {
+          "command": "untold.startDebugger",
+          "when": "resourceExtname == .ut",
+          "group": "untold@1"
         }
       ]
     },
@@ -86,6 +105,11 @@
       {
         "command": "untold.runFile",
         "key": "ctrl+shift+r",
+        "when": "resourceExtname == .ut"
+      },
+      {
+        "command": "untold.startRepl",
+        "key": "ctrl+shift+l",
         "when": "resourceExtname == .ut"
       }
     ],
@@ -108,7 +132,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "untold",
+    "programming-language",
+    "interpreter",
+    "compiler",
+    "scripting",
+    "ai",
+    "web"
+  ],
+  "author": {
+    "name": "Antony Jude",
+    "email": "thedrjude@github.com"
+  },
+  "license": "MIT"
 }

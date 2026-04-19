@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "untold-lang"
-version = "0.2.5"
-description = "Untold Lang — The Language Without Limits"
+version = "2.0.0"
+description = "Untold Lang v2.0.0 — The Language Without Limits"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [

@@ -20,13 +20,14 @@ class Parser:
         self.pos += 1
         return tok
 
-    def expect(self, ttype):
+    def expect(self, ttype, context=""):
         tok = self.current()
         if tok.type != ttype:
-            raise SyntaxError(
-                f"[Untold Parser] Expected {ttype} but got {tok.type} "
-                f"('{tok.value}') at line {tok.line}"
-            )
+            msg = f"[Untold Parser] Expected {ttype}"
+            if context:
+                msg += f" for {context}"
+            msg += f" but got {tok.type} ('{tok.value}') at line {tok.line}"
+            raise SyntaxError(msg)
         return self.advance()
 
     def match(self, *types):
@@ -345,7 +346,43 @@ class Parser:
             self.expect(TokenType.RPAREN)
             return expr
 
+        # List literal: [1, 2, 3]
+        if tok.type == TokenType.LBRACKET:
+            return self.parse_list_literal()
+
+        # Map literal: {"key": value}
+        if tok.type == TokenType.LBRACE:
+            return self.parse_map_literal()
+
         raise SyntaxError(
             f"[Untold Parser] Unexpected token {tok.type} "
             f"('{tok.value}') at line {tok.line}"
         )
+
+    def parse_list_literal(self):
+        """Parse [expr, expr, ...]"""
+        self.advance()  # consume [
+        elements = []
+        if self.current().type != TokenType.RBRACKET:
+            elements.append(self.parse_expr())
+            while self.current().type == TokenType.COMMA:
+                self.advance()  # consume ,
+                elements.append(self.parse_expr())
+        self.expect(TokenType.RBRACKET, "list elements")
+        return ListLiteral(elements)
+
+    def parse_map_literal(self):
+        """Parse {"key": value, ...}"""
+        self.advance()  # consume {
+        pairs = {}
+        if self.current().type != TokenType.RBRACE:
+            key = self.expect(TokenType.TEXT, "map key").value
+            self.expect(TokenType.COLON, "map key-value separator")
+            pairs[key] = self.parse_expr()
+            while self.current().type == TokenType.COMMA:
+                self.advance()  # consume ,
+                key = self.expect(TokenType.TEXT, "map key").value
+                self.expect(TokenType.COLON, "map key-value separator")
+                pairs[key] = self.parse_expr()
+        self.expect(TokenType.RBRACE, "map literal")
+        return MapLiteral(pairs)

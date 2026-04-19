@@ -18,6 +18,8 @@ from cli.commands import (
     cmd_search,
     cmd_version,
 )
+from cli.repl import cmd_repl
+from cli.debug import cmd_debug
 
 
 def main():
@@ -55,6 +57,12 @@ def main():
         cmd_version()
     elif command == "help":
         cmd_help()
+    elif command == "repl":
+        cmd_repl()
+    elif command == "debug":
+        cmd_debug(rest[0] if rest else None)
+    elif command == "shell":
+        cmd_repl()
     else:
         print(f"[Untold] Unknown command '{command}'. Run 'untold help'.")
         sys.exit(1)
