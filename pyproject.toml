@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "untold-lang"
+version = "0.1.2"
+description = "Untold Lang — The Language Without Limits"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Antony Jude", email = "thedrjude@github.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Interpreters",
+]
+requires-python = ">=3.10"
+dependencies = []
+entry-points = {console_scripts = {untold = "cli.main:main"}}
+
+[project.urls]
+Homepage = "https://github.com/thedrjude/untold-lang"
+Documentation = "https://thedrjude.github.io/untold-lang/"
+Repository = "https://github.com/thedrjude/untold-lang"
+
+[tool.setuptools.packages.find]
+where = ["."]
