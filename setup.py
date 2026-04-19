@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="untold-lang",
-    version="0.1.2",
+    version="0.2.3",
     description="Untold Lang — The Language Without Limits",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
