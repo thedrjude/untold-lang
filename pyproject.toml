@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "untold-lang"
-version = "0.2.3"
+version = "0.2.4"
 description = "Untold Lang — The Language Without Limits"
 readme = "README.md"
 license = {text = "MIT"}
@@ -21,7 +21,9 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = []
-entry-points = {console_scripts = {untold = "cli.main:main"}}
+
+[project.scripts]
+untold = "cli.main:main"
 
 [project.urls]
 Homepage = "https://github.com/thedrjude/untold-lang"
