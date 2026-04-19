@@ -8,11 +8,9 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/untold-lang/
     permissions:
       contents: write
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -22,19 +20,10 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install and build
       run: |
-        python -m pip install --upgrade pip
-        pip install build twine
-
-    - name: Build package
-      run: python -m build
-
-    - name: Publish to PyPI
-      run: twine upload dist/*
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        python -m pip install --upgrade pip build twine
+        python -m build
 
     - name: Create GitHub Release
       run: |
@@ -45,3 +34,20 @@ jobs:
           dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish to Test PyPI
+      if: false
+      run: |
+        twine upload -r testpypi dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+    - name: Publish to PyPI
+      run: |
+        echo "Publishing to PyPI..."
+        echo "Token length: ${# secrets.PYPI_TOKEN}"
+        twine upload --non-interactive dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
