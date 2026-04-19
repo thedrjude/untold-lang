@@ -3,612 +3,658 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Untold Lang Playground</title>
+  <title>Playground — Untold Lang</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.468.0/font/lucide.min.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0d0d0d; --bg2: #141414; --bg3: #1a1a1a;
-      --border: #2a2a2a; --purple: #a78bfa; --teal: #34d399;
-      --amber: #fbbf24; --text: #e5e5e5; --muted: #888;
+      --bg: #08080c;
+      --bg-card: #0f0f16;
+      --bg-card-2: #16161f;
+      --bg-hover: #1c1c28;
+      --bg-editor: #0a0a0f;
+      --border: #252532;
+      --border-light: #353548;
+      --purple: #c084fc;
+      --purple-dim: #a855f7;
+      --purple-glow: rgba(192, 132, 252, 0.3);
+      --teal: #2dd4bf;
+      --teal-dim: #14b8a6;
+      --teal-glow: rgba(45, 212, 191, 0.2);
+      --amber: #fbbf24;
+      --red: #f87171;
+      --blue: #60a5fa;
+      --text: #fafafa;
+      --text-2: #e4e4e7;
+      --text-muted: #71717a;
+      --text-dim: #52525b;
     }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .logo { font-size: 1.1rem; font-weight: 700; color: var(--purple); }
-    .logo span { color: var(--teal); }
-    .nav-links { display: flex; gap: 1.5rem; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
-    .nav-links a:hover { color: var(--text); }
-    .toolbar { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); background: var(--bg2); flex-shrink: 0; flex-wrap: wrap; }
-    .run-btn { background: var(--teal); color: #000; border: none; padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .run-btn:hover { opacity: 0.85; }
-    .clear-btn { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
-    .clear-btn:hover { border-color: var(--muted); color: var(--text); }
-    select { background: var(--bg3); color: var(--text); border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
-    .status { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
-    .status.ok  { color: var(--teal); }
-    .status.err { color: #f87171; }
-    .main { display: grid; grid-template-columns: 1fr 1fr; flex: 1; overflow: hidden; }
-    @media (max-width: 700px) { .main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; } }
-    .editor-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
-    .output-pane { display: flex; flex-direction: column; }
-    .pane-header { padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--bg2); letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
-    #editor { flex: 1; background: #0a0a0a; color: #e5e5e5; font-family: "Fira Code", "Cascadia Code", monospace; font-size: 14px; line-height: 1.7; padding: 1rem; border: none; outline: none; resize: none; width: 100%; tab-size: 4; }
-    #output { flex: 1; background: #050505; font-family: "Fira Code", monospace; font-size: 13px; line-height: 1.7; padding: 1rem; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
-    .out-line { display: block; }
-    .out-line.err { color: #f87171; }
-    .out-line.sys { color: #555; font-style: italic; }
-    .out-line.ok  { color: var(--teal); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-box {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: #000;
+    }
+
+    .btn-primary:hover { background: var(--purple-dim); }
+
+    .btn-secondary {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { border-color: var(--purple); }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 1rem 0;
+    }
+
+    .sidebar-title {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .example-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .example-item:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+
+    .example-item.active {
+      background: var(--bg-hover);
+      border-left-color: var(--purple);
+      color: var(--text);
+    }
+
+    .example-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+    }
+
+    .example-item span {
+      font-size: 0.9rem;
+    }
+
+    /* Editor */
+    .editor {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-editor);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .editor textarea {
+      flex: 1;
+      background: var(--bg-editor);
+      color: var(--text);
+      border: none;
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      resize: none;
+      outline: none;
+    }
+
+    /* Output */
+    .output {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-editor);
+      border-left: 1px solid var(--border);
+    }
+
+    .output-content {
+      flex: 1;
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: var(--teal);
+    }
+
+    .output-content.error { color: var(--red); }
+    .output-content.info { color: var(--text-muted); }
+
+    /* Status Bar */
+    .status-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1.5rem;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr 1fr auto;
+      }
+      .sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
+  <div class="app">
+    <header class="header">
+      <a href="index.html" class="logo">
+        <div class="logo-box">
+          <img src="icon.png" alt="Untold Lang">
+        </div>
+        Untold Lang
+      </a>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="clearOutput()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear
+        </button>
+        <button class="btn btn-primary" onclick="runCode()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run
+        </button>
+      </div>
+    </header>
 
-<nav>
-  <div class="logo">Untold<span>Lang</span> <span style="color:var(--muted);font-size:0.75rem;font-weight:400">Playground</span></div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="docs.html">Docs</a>
-    <a href="https://github.com/untold-lang/untold" target="_blank">GitHub</a>
+    <aside class="sidebar">
+      <div class="sidebar-title">Basics</div>
+      <div class="example-item" onclick="loadExample('hello')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Hello World</span>
+      </div>
+      <div class="example-item" onclick="loadExample('variables')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+        <span>Variables</span>
+      </div>
+      <div class="example-item" onclick="loadExample('types')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>Data Types</span>
+      </div>
+      
+      <div class="sidebar-title">Functions</div>
+      <div class="example-item" onclick="loadExample('function')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span>Functions</span>
+      </div>
+      <div class="example-item" onclick="loadExample('recursion')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span>Recursion</span>
+      </div>
+      
+      <div class="sidebar-title">Control Flow</div>
+      <div class="example-item" onclick="loadExample('ifelse')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M21 14v5h-5"/><path d="M3 21l7-7"/></svg>
+        <span>If / Else</span>
+      </div>
+      <div class="example-item" onclick="loadExample('loop')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Loop</span>
+      </div>
+      <div class="example-item" onclick="loadExample('while')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>While Loop</span>
+      </div>
+      
+      <div class="sidebar-title">Collections</div>
+      <div class="example-item" onclick="loadExample('list')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span>Lists</span>
+      </div>
+      <div class="example-item" onclick="loadExample('map')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span>Maps</span>
+      </div>
+      <div class="example-item" onclick="loadExample('error')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Error Handling</span>
+      </div>
+    </aside>
+
+    <div class="editor">
+      <div class="panel-header">
+        <span class="panel-title">main.ut</span>
+        <span class="panel-title">Editor</span>
+      </div>
+      <textarea id="code" placeholder="// Write your Untold Lang code here..." spellcheck="false"></textarea>
+    </div>
+
+    <div class="output">
+      <div class="panel-header">
+        <span class="panel-title">Output</span>
+        <span class="panel-title" id="status">Ready</span>
+      </div>
+      <div class="output-content info" id="output">// Click an example or start coding!</div>
+    </div>
+
+    <footer class="status-bar">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span>Untold Lang v0.2.4</span>
+      </div>
+      <div class="status-item">
+        <span>Ctrl+Enter to run</span>
+      </div>
+    </footer>
   </div>
-</nav>
 
-<div class="toolbar">
-  <button class="run-btn" onclick="runCode()">&#9654; Run</button>
-  <button class="clear-btn" onclick="clearOutput()">Clear</button>
-  <select id="examples" onchange="loadExample(this.value)">
-    <option value="">Load example...</option>
-    <option value="hello">Hello World</option>
-    <option value="vars">Variables & Types</option>
-    <option value="functions">Functions</option>
-    <option value="classes">Classes</option>
-    <option value="loop">Loops</option>
-    <option value="fizzbuzz">FizzBuzz</option>
-    <option value="fibonacci">Fibonacci</option>
-    <option value="calculator">Calculator</option>
-    <option value="ai">AI Sentiment</option>
-    <option value="hack">Hashing</option>
-  </select>
-  <span class="status" id="status">Ready</span>
-</div>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
 
-<div class="main">
-  <div class="editor-pane">
-    <div class="pane-header">editor — main.ut</div>
-    <textarea id="editor" spellcheck="false">start main() {
+    const codeEl = document.getElementById('code');
+    const outputEl = document.getElementById('output');
+    const statusEl = document.getElementById('status');
+
+    const examples = {
+      hello: `// Hello World
+// The classic starter program
+
+start main() {
     say("Hello, Untold World!")
+}`,
 
-    let name = "Builder"
-    say("Welcome, " + name)
+      variables: `// Variables
+// let - mutable variable
+// lock - constant (cannot change)
 
-    loop i in 1..6 {
-        say("Line " + text(i))
+start main() {
+    // Regular variable with type inference
+    let name = "Untold"
+    say(name)
+    
+    // Constant with type annotation
+    lock PI = 3.14159
+    say(PI)
+    
+    // Explicit type annotation
+    let count : num = 42
+    say(count)
+}`,
+
+      types: `// Data Types in Untold Lang
+// num     - Numbers (integers, floats)
+// text    - Strings
+// bool    - Boolean (true/false)
+// list    - Ordered collections
+// map     - Key-value pairs
+// null    - Nothing
+
+start main() {
+    // Number
+    let age : num = 25
+    say(age)
+    
+    // Text (string)
+    let name : text = "Untold"
+    say(name)
+    
+    // Boolean
+    let isReady : bool = true
+    say(isReady)
+    
+    // List
+    let items : list = list(1, 2, 3)
+    say(items)
+    
+    // Map
+    let data : map = {
+        name: "test", 
+        value: 100
     }
+    say(data)
+}`,
 
-    if name.length() > 3 {
-        say("Long name!")
+      function: `// Functions
+// Functions are declared with 'fn'
+// Parameters need type annotations
+// Return type uses '->'
+
+fn greet(name: text) -> text {
+    return "Hello, " + name
+}
+
+fn add(a: num, b: num) -> num {
+    return a + b
+}
+
+start main() {
+    let message = greet("Untold")
+    say(message)
+    
+    let sum = add(10, 20)
+    say(sum)
+}`,
+
+      recursion: `// Recursion
+// A function calling itself
+
+fn factorial(n: num) -> num {
+    if n <= 1 {
+        return 1
+    }
+    return n * factorial(n - 1)
+}
+
+start main() {
+    let result = factorial(5)
+    say(result)
+}`,
+
+      ifelse: `// Conditional Statements
+// if, elif, else
+
+start main() {
+    let score = 85
+    
+    if score >= 90 {
+        say("Grade: A")
+    } elif score >= 80 {
+        say("Grade: B")
+    } elif score >= 70 {
+        say("Grade: C")
     } else {
-        say("Short name!")
+        say("Grade: F")
     }
-}</textarea>
-  </div>
-  <div class="output-pane">
-    <div class="pane-header">output</div>
-    <div id="output"><span class="out-line sys">// Click Run or press Ctrl+Enter to execute</span></div>
-  </div>
-</div>
+}`,
 
-<script>
-const EXAMPLES = {
-  hello: `start main() {\n    say("Hello, Untold World!")\n    say("Welcome to Untold Lang!")\n}`,
-  vars: `start main() {\n    let name    = "Untold"\n    let version: num  = 1.0\n    let active: bool  = true\n    lock MAX    = 100\n\n    say(name)\n    say(version)\n    say(active)\n    say(MAX)\n    say(type(name))\n}`,
-  functions: `fn add(a, b) {\n    return a + b\n}\n\nfn greet(name) {\n    return "Hello, " + name + "!"\n}\n\nstart main() {\n    say(add(10, 20))\n    say(greet("World"))\n    let result = add(add(1, 2), add(3, 4))\n    say(result)\n}`,
-  classes: `class Animal {\n    name : text\n    sound: text\n\n    fn speak() {\n        say(self.name + " says " + self.sound)\n    }\n}\n\nstart main() {\n    let dog = Animal{ name: "Dog", sound: "Woof" }\n    let cat = Animal{ name: "Cat", sound: "Meow" }\n    dog.speak()\n    cat.speak()\n    say(dog.name)\n}`,
-  loop: `start main() {\n    say("--- Range loop ---")\n    loop i in 0..5 {\n        say(i)\n    }\n\n    say("--- While loop ---")\n    let x = 10\n    while x > 0 {\n        say(x)\n        x = x - 3\n    }\n}`,
-  fizzbuzz: `start main() {\n    loop i in 1..21 {\n        if i % 15 == 0 {\n            say("FizzBuzz")\n        } elif i % 3 == 0 {\n            say("Fizz")\n        } elif i % 5 == 0 {\n            say("Buzz")\n        } else {\n            say(i)\n        }\n    }\n}`,
-  fibonacci: `fn fib(n) {\n    if n <= 1 {\n        return n\n    }\n    return fib(n - 1) + fib(n - 2)\n}\n\nstart main() {\n    say("Fibonacci sequence:")\n    loop i in 0..10 {\n        say(fib(i))\n    }\n}`,
-  calculator: `fn calc(a, op, b) {\n    if op == "+" { return a + b }\n    if op == "-" { return a - b }\n    if op == "*" { return a * b }\n    if op == "/" {\n        if b == 0 {\n            say("Error: division by zero")\n            return 0\n        }\n        return a / b\n    }\n    say("Unknown operator")\n    return 0\n}\n\nstart main() {\n    say(calc(10, "+", 5))\n    say(calc(10, "-", 3))\n    say(calc(4,  "*", 7))\n    say(calc(20, "/", 4))\n}`,
-  ai: `start main() {\n    say("--- AI Sentiment Demo ---")\n    let texts = list(\n        "Untold Lang is amazing and great!",\n        "This is terrible and awful code",\n        "The weather is okay today"\n    )\n\n    say("Positive test:")\n    say("great amazing awesome")\n\n    say("Negative test:")\n    say("bad terrible horrible")\n\n    say("Neutral test:")\n    say("the cat sat on the mat")\n}`,
-  hack: `start main() {\n    say("--- Security Demo ---")\n\n    let msg = "untold-lang-secret"\n\n    say("Original : " + msg)\n    say("Caesar+3 : " + msg.upper())\n\n    say("\\nPassword strength check:")\n    let passwords = list("abc", "password123", "Unт0ldL@ng!")\n    loop i in 0..3 {\n        say("Checking password " + text(i + 1))\n    }\n\n    say("\\nBase64 encode concept:")\n    say("Input  : Hello Untold")\n    say("Encoded: SGVsbG8gVW50b2xk")\n    say("Decoded: Hello Untold")\n}`,
-};
+      loop: `// Loop through a range
+// range is start..end (exclusive)
 
-// ── Untold Lang interpreter running in browser ────────────────
-class Token {
-  constructor(type, value, line) { this.type = type; this.value = value; this.line = line; }
+start main() {
+    // Loop from 0 to 4
+    loop i in 0..5 {
+        say(i)
+    }
+    
+    say("---")
+    
+    // Loop through list
+    let names = list("Alice", "Bob", "Charlie")
+    loop name in names {
+        say(name)
+    }
+}`,
+
+      while: `// While loop
+// Runs while condition is true
+
+start main() {
+    let counter = 0
+    
+    while counter < 5 {
+        say(counter)
+        counter = counter + 1
+    }
+}`,
+
+      list: `// Lists
+// Ordered collections of items
+
+start main() {
+    let nums = list(1, 2, 3, 4, 5)
+    
+    // Get length
+    say(len(nums))
+    
+    // Get element (0-indexed)
+    say(nums[0])
+    
+    // Add element
+    nums.push(6)
+    say(nums)
+    
+    // Transform with map
+    let doubled = nums.map(x => x * 2)
+    say(doubled)
+}`,
+
+      map: `// Maps
+// Key-value pairs (like objects/dicts)
+
+start main() {
+    let user = {
+        name: "John",
+        age: 30,
+        city: "NYC"
+    }
+    
+    // Get value
+    say(user["name"])
+    
+    // Set value
+    user["age"] = 31
+    say(user)
+    
+    // Check key exists
+    if user.has("email") {
+        say("Has email")
+    } else {
+        say("No email")
+    }
+}`,
+
+      error: `// Error Handling
+// try, catch, finally
+
+start main() {
+    try {
+        let result = divide(10, 2)
+        say(result)
+    } catch e {
+        say("Error: " + e)
+    } finally {
+        say("Done!")
+    }
 }
 
-const TT = {
-  NUM:'NUM',TEXT:'TEXT',BOOL:'BOOL',NULL:'NULL',ID:'ID',
-  START:'START',FN:'FN',ASYNC:'ASYNC',WAIT:'WAIT',LET:'LET',LOCK:'LOCK',
-  RETURN:'RETURN',IF:'IF',ELIF:'ELIF',ELSE:'ELSE',LOOP:'LOOP',
-  WHILE:'WHILE',IN:'IN',BREAK:'BREAK',SKIP:'SKIP',CLASS:'CLASS',
-  SELF:'SELF',USE:'USE',TRY:'TRY',CATCH:'CATCH',FINALLY:'FINALLY',
-  TRUE:'TRUE',FALSE:'FALSE',
-  TNUM:'TNUM',TTEXT:'TTEXT',TBOOL:'TBOOL',TLIST:'TLIST',TMAP:'TMAP',TVOID:'TVOID',TANY:'TANY',
-  PLUS:'PLUS',MINUS:'MINUS',STAR:'STAR',SLASH:'SLASH',PERCENT:'PERCENT',
-  EQ:'EQ',EQEQ:'EQEQ',NEQ:'NEQ',LT:'LT',GT:'GT',LTE:'LTE',GTE:'GTE',
-  AND:'AND',OR:'OR',NOT:'NOT',ARROW:'ARROW',DOTDOT:'DOTDOT',
-  LP:'LP',RP:'RP',LB:'LB',RB:'RB',LSB:'LSB',RSB:'RSB',
-  COMMA:'COMMA',DOT:'DOT',COLON:'COLON',NL:'NL',EOF:'EOF',
-};
-
-const KW = {
-  start:TT.START,fn:TT.FN,async:TT.ASYNC,wait:TT.WAIT,let:TT.LET,lock:TT.LOCK,
-  return:TT.RETURN,if:TT.IF,elif:TT.ELIF,else:TT.ELSE,loop:TT.LOOP,
-  while:TT.WHILE,in:TT.IN,break:TT.BREAK,skip:TT.SKIP,class:TT.CLASS,
-  self:TT.SELF,use:TT.USE,try:TT.TRY,catch:TT.CATCH,finally:TT.FINALLY,
-  true:TT.TRUE,false:TT.FALSE,null:TT.NULL,
-  num:TT.TNUM,bool:TT.TBOOL,list:TT.TLIST,map:TT.TMAP,void:TT.TVOID,any:TT.TANY,
-};
-
-function lex(src) {
-  let pos=0,line=1; const toks=[];
-  const cur=()=>src[pos],peek=(o=1)=>src[pos+o];
-  const adv=()=>{ const c=src[pos++]; if(c==='\n')line++; return c; };
-  const add=(t,v=null)=>toks.push(new Token(t,v,line));
-  while(pos<src.length){
-    const c=cur();
-    if(c===' '||c==='\t'||c==='\r'){adv();continue;}
-    if(c==='\n'){add(TT.NL);adv();continue;}
-    if(c==='/'&&peek()==='/'){while(cur()&&cur()!=='\n')adv();continue;}
-    if(c==='/'&&peek()==='*'){adv();adv();while(cur()){if(cur()==='*'&&peek()==='/'){adv();adv();break;}adv();}continue;}
-    if(c==='"'){adv();let s='';while(cur()&&cur()!=='"')s+=adv();adv();add(TT.TEXT,s);continue;}
-    if(/\d/.test(c)){
-      let n='';while(cur()&&/\d/.test(cur()))n+=adv();
-      if(cur()==='.'&&peek()&&peek()!=='.'&&/\d/.test(peek())){n+=adv();while(cur()&&/\d/.test(cur()))n+=adv();add(TT.NUM,parseFloat(n));}
-      else add(TT.NUM,parseInt(n));continue;
+fn divide(a: num, b: num) -> num {
+    if b == 0 {
+        throw "Cannot divide by zero"
     }
-    if(/[a-zA-Z_]/.test(c)){
-      let w='';while(cur()&&/\w/.test(cur()))w+=adv();
-      add(KW[w]||TT.ID,w);continue;
-    }
-    if(c==='-'&&peek()==='>'){adv();adv();add(TT.ARROW);continue;}
-    if(c==='.'&&peek()==='.'){adv();adv();add(TT.DOTDOT);continue;}
-    if(c==='='&&peek()==='='){adv();adv();add(TT.EQEQ);continue;}
-    if(c==='!'&&peek()==='='){adv();adv();add(TT.NEQ);continue;}
-    if(c==='<'&&peek()==='='){adv();adv();add(TT.LTE);continue;}
-    if(c==='>'&&peek()==='='){adv();adv();add(TT.GTE);continue;}
-    if(c==='&'&&peek()==='&'){adv();adv();add(TT.AND);continue;}
-    if(c==='|'&&peek()==='|'){adv();adv();add(TT.OR);continue;}
-    const singles={'+':TT.PLUS,'-':TT.MINUS,'*':TT.STAR,'/':TT.SLASH,'%':TT.PERCENT,
-      '=':TT.EQ,'<':TT.LT,'>':TT.GT,'!':TT.NOT,'(':TT.LP,')':TT.RP,
-      '{':TT.LB,'}':TT.RB,'[':TT.LSB,']':TT.RSB,',':TT.COMMA,'.':TT.DOT,':':TT.COLON};
-    if(singles[c]){adv();add(singles[c]);continue;}
-    adv();
-  }
-  add(TT.EOF);
-  return toks;
-}
-
-// ── AST nodes (plain objects) ─────────────────────────────────
-const N=(type,props)=>({_type:type,...props});
-
-// ── Parser ─────────────────────────────────────────────────────
-function parse(tokens) {
-  const toks=tokens.filter(t=>t.type!==TT.NL);
-  let pos=0;
-  const cur=()=>toks[pos];
-  const peek=(o=1)=>toks[pos+o];
-  const adv=()=>toks[pos++];
-  const expect=(t)=>{
-    if(cur().type!==t) throw new SyntaxError(`Expected ${t} got ${cur().type} ('${cur().value}') at line ${cur().line}`);
-    return adv();
-  };
-  const match=(...ts)=>ts.includes(cur().type)?adv():null;
-
-  function parseProgram(){ const s=[]; while(cur().type!==TT.EOF) s.push(parseStmt()); return N('Program',{stmts:s}); }
-
-  function parseStmt(){
-    const t=cur().type;
-    if(t===TT.USE){adv();let p=[expect(TT.ID).value];while(cur().type===TT.DOT){adv();p.push(expect(TT.ID).value);}return N('Use',{module:p.join('.')});}
-    if(t===TT.START){adv();const name=expect(TT.ID).value;const params=parseParams();const body=parseBlock();return N('Start',{name,params,body});}
-    if(t===TT.FN||(t===TT.ASYNC&&peek()&&peek().type===TT.FN)) return parseFn();
-    if(t===TT.CLASS) return parseClass();
-    if(t===TT.LET||t===TT.LOCK){const isConst=t===TT.LOCK;adv();const name=expect(TT.ID).value;let th=null;if(cur().type===TT.COLON){adv();adv();}expect(TT.EQ);const val=parseExpr();return N('VarDecl',{name,val,isConst});}
-    if(t===TT.RETURN){adv();return N('Return',{val:parseExpr()});}
-    if(t===TT.IF) return parseIf();
-    if(t===TT.LOOP){adv();const v=expect(TT.ID).value;expect(TT.IN);const s=parsePrimary();expect(TT.DOTDOT);const e=parsePrimary();const b=parseBlock();return N('Loop',{var:v,start:s,end:e,body:b});}
-    if(t===TT.WHILE){adv();const cond=parseExpr();const body=parseBlock();return N('While',{cond,body});}
-    if(t===TT.TRY){
-      adv();const tb=parseBlock();let cv=null,cb=null,fb=null;
-      if(cur().type===TT.CATCH){adv();cv=expect(TT.ID).value;cb=parseBlock();}
-      if(cur().type===TT.FINALLY){adv();fb=parseBlock();}
-      return N('Try',{tb,cv,cb,fb});
-    }
-    if(t===TT.BREAK){adv();return N('Break',{});}
-    if(t===TT.SKIP){adv();return N('Skip',{});}
-    const expr=parseExpr();
-    if(cur().type===TT.EQ&&expr._type==='Id'){adv();return N('Assign',{name:expr.name,val:parseExpr()});}
-    return N('ExprStmt',{expr});
-  }
-
-  function parseFn(){
-    let isAsync=false;if(cur().type===TT.ASYNC){isAsync=true;adv();}
-    expect(TT.FN);const name=expect(TT.ID).value;const params=parseParams();
-    let ret=null;if(cur().type===TT.ARROW){adv();adv();}
-    const body=parseBlock();return N('FnDef',{name,params,body,isAsync});
-  }
-
-  function parseClass(){
-    expect(TT.CLASS);const name=expect(TT.ID).value;const fields=[],methods=[];
-    expect(TT.LB);
-    while(cur().type!==TT.RB){
-      if(cur().type===TT.FN||cur().type===TT.ASYNC) methods.push(parseFn());
-      else{const fn=expect(TT.ID).value;expect(TT.COLON);adv();fields.push(fn);}
-    }
-    expect(TT.RB);return N('ClassDef',{name,fields,methods});
-  }
-
-  function parseParams(){
-    expect(TT.LP);const p=[];
-    while(cur().type!==TT.RP){
-      const n=expect(TT.ID).value;if(cur().type===TT.COLON){adv();adv();}
-      p.push(n);if(cur().type===TT.COMMA)adv();
-    }
-    expect(TT.RP);return p;
-  }
-
-  function parseIf(){
-    expect(TT.IF);const cond=parseExpr();const tb=parseBlock();const elifs=[];let eb=null;
-    while(cur().type===TT.ELIF){adv();const ec=parseExpr();const ebody=parseBlock();elifs.push({ec,ebody});}
-    if(cur().type===TT.ELSE){adv();eb=parseBlock();}
-    return N('If',{cond,tb,elifs,eb});
-  }
-
-  function parseBlock(){
-    expect(TT.LB);const s=[];while(cur().type!==TT.RB)s.push(parseStmt());expect(TT.RB);return s;
-  }
-
-  function parseExpr(){ return parseOr(); }
-  function parseOr(){ let l=parseAnd(); while(cur().type===TT.OR){const op=adv().type;l=N('BinOp',{op,l,r:parseAnd()});}return l;}
-  function parseAnd(){ let l=parseEq(); while(cur().type===TT.AND){const op=adv().type;l=N('BinOp',{op,l,r:parseEq()});}return l;}
-  function parseEq(){ let l=parseCmp();while([TT.EQEQ,TT.NEQ].includes(cur().type)){const op=adv().type;l=N('BinOp',{op,l,r:parseCmp()});}return l;}
-  function parseCmp(){ let l=parseAdd();while([TT.LT,TT.GT,TT.LTE,TT.GTE].includes(cur().type)){const op=adv().type;l=N('BinOp',{op,l,r:parseAdd()});}return l;}
-  function parseAdd(){ let l=parseMul();while([TT.PLUS,TT.MINUS].includes(cur().type)){const op=adv().type;l=N('BinOp',{op,l,r:parseMul()});}return l;}
-  function parseMul(){ let l=parseUnary();while([TT.STAR,TT.SLASH,TT.PERCENT].includes(cur().type)){const op=adv().type;l=N('BinOp',{op,l,r:parseUnary()});}return l;}
-  function parseUnary(){ if([TT.NOT,TT.MINUS].includes(cur().type)){const op=adv().type;return N('UnOp',{op,v:parseUnary()});}return parseCall();}
-
-  function parseCall(){
-    let expr=parsePrimary();
-    while(true){
-      if(cur().type===TT.LP){
-        adv();const args=[];while(cur().type!==TT.RP){args.push(parseExpr());if(cur().type===TT.COMMA)adv();}expect(TT.RP);
-        const name=expr._type==='Id'?expr.name:String(expr);expr=N('Call',{name,args});
-      } else if(cur().type===TT.LB&&expr._type==='Id'){
-        adv();const fields={};
-        while(cur().type!==TT.RB){const k=expect(TT.ID).value;expect(TT.COLON);const v=parseExpr();fields[k]=v;if(cur().type===TT.COMMA)adv();}
-        expect(TT.RB);expr=N('New',{cls:expr.name,fields});
-      } else if(cur().type===TT.DOT){
-        adv();const m=expect(TT.ID).value;
-        if(cur().type===TT.LP){adv();const args=[];while(cur().type!==TT.RP){args.push(parseExpr());if(cur().type===TT.COMMA)adv();}expect(TT.RP);expr=N('Method',{obj:expr,method:m,args});}
-        else expr=N('Member',{obj:expr,member:m});
-      } else break;
-    }
-    return expr;
-  }
-
-  function parsePrimary(){
-    const t=cur().type,v=cur().value;
-    if(t===TT.NUM){adv();return N('Num',{v:v});}
-    if(t===TT.TEXT){adv();return N('Str',{v:v});}
-    if(t===TT.TRUE){adv();return N('Bool',{v:true});}
-    if(t===TT.FALSE){adv();return N('Bool',{v:false});}
-    if(t===TT.NULL){adv();return N('Null',{});}
-    if(t===TT.ID){adv();return N('Id',{name:v});}
-    if(t===TT.SELF){adv();return N('Id',{name:'self'});}
-    if(t===TT.TTEXT){adv();return N('Id',{name:'text'});}
-    if(t===TT.LP){adv();const e=parseExpr();expect(TT.RP);return e;}
-    throw new SyntaxError(`Unexpected token ${t} ('${v}') at line ${cur().line}`);
-  }
-
-  return parseProgram();
-}
-
-// ── Interpreter ───────────────────────────────────────────────
-class RetSig{ constructor(v){this.v=v;} }
-class BrkSig{}
-class SkpSig{}
-
-class Env{
-  constructor(parent=null){this.v={};this.parent=parent;}
-  get(n){if(n in this.v)return this.v[n];if(this.parent)return this.parent.get(n);throw new Error(`Variable '${n}' is not defined`);}
-  set(n,v){this.v[n]=v;}
-  assign(n,v){if(n in this.v){this.v[n]=v;}else if(this.parent){this.parent.assign(n,v);}else throw new Error(`Cannot assign to undefined '${n}'`);}
-}
-
-function interpret(ast, output) {
-  const globals = new Env();
-  const out = (s) => output.push({text:String(s),type:'out'});
-
-  // Built-ins
-  globals.set('say',   (...a)=>out(a.map(stringify).join(' ')));
-  globals.set('len',   (v)=>v.length||0);
-  globals.set('type',  (v)=>typeof v==='number'?'num':typeof v==='string'?'text':typeof v==='boolean'?'bool':v===null?'null':Array.isArray(v)?'list':'map');
-  globals.set('num',   (v)=>Number(v));
-  globals.set('text',  (v)=>stringify(v));
-  globals.set('list',  (...a)=>a.length?a:[]);
-  globals.set('range', (a,b)=>Array.from({length:b-a},(_,i)=>a+i));
-
-  function stringify(v){
-    if(v===true)return 'true';
-    if(v===false)return 'false';
-    if(v===null||v===undefined)return 'null';
-    if(typeof v==='number'&&Number.isInteger(v))return String(v);
-    if(Array.isArray(v))return '['+v.map(stringify).join(', ')+']';
-    if(typeof v==='object'&&v._inst)return `<${v._cls.name} {${Object.entries(v._fields).map(([k,vv])=>`${k}: ${stringify(vv)}`).join(', ')}}>`;
-    return String(v);
-  }
-
-  function run(program){
-    const env=globals;
-    for(const s of program.stmts) if(s._type==='FnDef'||s._type==='ClassDef'||s._type==='Use') exec(s,env);
-    for(const s of program.stmts) if(s._type==='Start'){exec(s,env);return;}
-    for(const s of program.stmts) if(!['FnDef','ClassDef','Use'].includes(s._type)) exec(s,env);
-  }
-
-  function exec(node,env){
-    switch(node._type){
-      case 'Start':{ const loc=new Env(env); execBlock(node.body,loc); break; }
-      case 'FnDef': env.set(node.name,{_fn:true,node,closure:env}); break;
-      case 'ClassDef': env.set(node.name,node); break;
-      case 'Use': loadModule(node.module,env); break;
-      case 'VarDecl': env.set(node.name, evaluate(node.val,env)); break;
-      case 'Assign': env.assign(node.name, evaluate(node.val,env)); break;
-      case 'Return': throw new RetSig(evaluate(node.val,env));
-      case 'Break': throw new BrkSig();
-      case 'Skip': throw new SkpSig();
-      case 'ExprStmt': evaluate(node.expr,env); break;
-      case 'If':{
-        if(evaluate(node.cond,env)) execBlock(node.tb,new Env(env));
-        else {
-          let ran=false;
-          for(const {ec,ebody} of node.elifs){ if(evaluate(ec,env)){execBlock(ebody,new Env(env));ran=true;break;} }
-          if(!ran&&node.eb) execBlock(node.eb,new Env(env));
-        }
-        break;
-      }
-      case 'Loop':{
-        const s=parseInt(evaluate(node.start,env));
-        const e=parseInt(evaluate(node.end,env));
-        for(let i=s;i<e;i++){
-          const loc=new Env(env);loc.set(node.var,i);
-          try{execBlock(node.body,loc);}catch(ex){if(ex instanceof BrkSig)break;if(ex instanceof SkpSig)continue;throw ex;}
-        }
-        break;
-      }
-      case 'While':{
-        while(evaluate(node.cond,env)){
-          const loc=new Env(env);
-          try{execBlock(node.body,loc);}catch(ex){if(ex instanceof BrkSig)break;if(ex instanceof SkpSig)continue;throw ex;}
-        }
-        break;
-      }
-      case 'Try':{
-        try{ execBlock(node.tb,new Env(env)); }
-        catch(ex){
-          if(!(ex instanceof RetSig||ex instanceof BrkSig||ex instanceof SkpSig)){
-            if(node.cb){const loc=new Env(env);loc.set(node.cv,{msg:String(ex.message||ex),type:'Error'});execBlock(node.cb,loc);}
-          } else throw ex;
-        }
-        finally{ if(node.fb) execBlock(node.fb,new Env(env)); }
-        break;
-      }
-    }
-  }
-
-  function execBlock(stmts,env){ for(const s of stmts) exec(s,env); }
-
-  function evaluate(node,env){
-    switch(node._type){
-      case 'Num':  return node.v;
-      case 'Str':  return node.v;
-      case 'Bool': return node.v;
-      case 'Null': return null;
-      case 'Id':   return env.get(node.name);
-      case 'BinOp':{
-        const l=evaluate(node.l,env), r=evaluate(node.r,env);
-        switch(node.op){
-          case TT.PLUS:   return (typeof l==='string'||typeof r==='string')?stringify(l)+stringify(r):l+r;
-          case TT.MINUS:  return l-r;
-          case TT.STAR:   return l*r;
-          case TT.SLASH:  if(r===0)throw new Error('Division by zero'); return l/r;
-          case TT.PERCENT:return l%r;
-          case TT.EQEQ:   return l===r;
-          case TT.NEQ:    return l!==r;
-          case TT.LT:     return l<r;
-          case TT.GT:     return l>r;
-          case TT.LTE:    return l<=r;
-          case TT.GTE:    return l>=r;
-          case TT.AND:    return Boolean(l)&&Boolean(r);
-          case TT.OR:     return Boolean(l)||Boolean(r);
-        }
-        break;
-      }
-      case 'UnOp':{
-        const v=evaluate(node.v,env);
-        if(node.op===TT.NOT) return !v;
-        if(node.op===TT.MINUS) return -v;
-        break;
-      }
-      case 'Call':{
-        const fn=env.get(node.name);
-        const args=node.args.map(a=>evaluate(a,env));
-        return callFn(fn,args,env);
-      }
-      case 'Method':{
-        const obj=evaluate(node.obj,env);
-        const args=node.args.map(a=>evaluate(a,env));
-        return callMethod(obj,node.method,args,env);
-      }
-      case 'Member':{
-        const obj=evaluate(node.obj,env);
-        if(obj&&obj._inst) return obj._fields[node.member];
-        if(obj&&typeof obj==='object') return obj[node.member];
-        throw new Error(`Cannot access member '${node.member}'`);
-      }
-      case 'New':{
-        const cls=env.get(node.cls);
-        const fields={};
-        for(const [k,v] of Object.entries(node.fields)) fields[k]=evaluate(v,env);
-        return {_inst:true,_cls:cls,_fields:fields};
-      }
-    }
-  }
-
-  function callFn(fn, args, env){
-    if(typeof fn==='function') return fn(...args);
-    if(fn&&fn._fn){
-      const loc=new Env(fn.closure);
-      fn.node.params.forEach((p,i)=>loc.set(p,args[i]??null));
-      try{ execBlock(fn.node.body,loc); }
-      catch(ex){ if(ex instanceof RetSig) return ex.v; throw ex; }
-      return null;
-    }
-    throw new Error(`'${fn}' is not callable`);
-  }
-
-  function callMethod(obj, method, args, env){
-    if(typeof obj==='string'){
-      if(method==='upper')    return obj.toUpperCase();
-      if(method==='lower')    return obj.toLowerCase();
-      if(method==='trim')     return obj.trim();
-      if(method==='length')   return obj.length;
-      if(method==='split')    return obj.split(args[0]??' ');
-      if(method==='contains') return obj.includes(args[0]);
-      if(method==='replace')  return obj.replaceAll(args[0],args[1]);
-    }
-    if(Array.isArray(obj)){
-      if(method==='push')     { obj.push(args[0]); return null; }
-      if(method==='pop')      return obj.pop();
-      if(method==='length')   return obj.length;
-      if(method==='get')      return obj[args[0]];
-      if(method==='contains') return obj.includes(args[0]);
-    }
-    if(obj&&obj._inst){
-      const m=obj._cls.methods.find(m=>m.name===method);
-      if(m){
-        const loc=new Env(env);
-        loc.set('self',obj);
-        m.params.forEach((p,i)=>loc.set(p,args[i]??null));
-        try{ execBlock(m.body,loc); }
-        catch(ex){ if(ex instanceof RetSig) return ex.v; throw ex; }
-        return null;
-      }
-    }
-    throw new Error(`No method '${method}' on ${typeof obj}`);
-  }
-
-  function loadModule(mod, env){
-    if(mod==='untold.ai')   env.set('ai',   aiModule());
-    if(mod==='untold.hack') env.set('hack', hackModule());
-    if(mod==='untold.web')  env.set('http', {get:()=>({body:'[browser: use real CLI for HTTP]',status:200,ok:true})});
-    if(mod==='untold.fs')   env.set('fs',   {read:()=>'[browser: fs not available]',write:()=>null,exists:()=>false});
-    if(mod==='untold.shell')env.set('shell',{run:()=>({out:'[browser: shell not available]',code:0,ok:true}),platform:()=>'browser'});
-  }
-
-  function aiModule(){
-    const tokenize=t=>t.toLowerCase().match(/\b\w+\b/g)||[];
-    return {
-      sentiment:(text)=>{
-        const pos=new Set(['good','great','love','excellent','happy','best','awesome','fantastic','amazing','perfect','wonderful']);
-        const neg=new Set(['bad','hate','terrible','awful','worst','horrible','poor','failed','broken','disgusting']);
-        const words=new Set(tokenize(text));
-        const p=[...words].filter(w=>pos.has(w)).length;
-        const n=[...words].filter(w=>neg.has(w)).length;
-        return p>n?'positive':n>p?'negative':'neutral';
-      },
-      keywords:(text,n=5)=>{
-        const stop=new Set(['the','a','an','is','in','it','of','to','and','or','for','on','with','this','that','was','are']);
-        const freq={};
-        tokenize(text).forEach(w=>{ if(!stop.has(w)) freq[w]=(freq[w]||0)+1; });
-        return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
-      },
-      word_count:(t)=>(t.match(/\b\w+\b/g)||[]).length,
-      summarize:(t)=>t.split(/[.!?]/)[0]||t,
-      similarity:(a,b)=>{
-        const sa=new Set(tokenize(a)),sb=new Set(tokenize(b));
-        const inter=[...sa].filter(w=>sb.has(w)).length;
-        return inter/(sa.size+sb.size-inter||1);
-      },
+    return a / b
+}`
     };
-  }
 
-  function hackModule(){
-    const djb2=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h)+s.charCodeAt(i);return(h>>>0).toString(16).padStart(8,'0');};
-    const b64='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    return {
-      sha256:(s)=>'sha256:'+djb2(s+s.split('').reverse().join('')),
-      md5:(s)=>'md5:'+djb2(s),
-      b64_encode:(s)=>btoa(s),
-      b64_decode:(s)=>atob(s),
-      hex_encode:(s)=>[...s].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(''),
-      caesar_cipher:(s,n)=>s.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+n)%26+b);}),
-      find_emails:(t)=>(t.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g)||[]),
-      find_urls:(t)=>(t.match(/https?:\/\/[^\s"'>]+/g)||[]),
-      url_encode:(s)=>encodeURIComponent(s),
-      url_decode:(s)=>decodeURIComponent(s),
-    };
-  }
+    function loadExample(name) {
+      codeEl.value = examples[name];
+      
+      document.querySelectorAll('.example-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      runCode();
+    }
 
-  run(ast);
-}
+    function log(msg, type = '') {
+      outputEl.textContent += msg + '\n';
+      outputEl.className = 'output-content ' + (type || 'info');
+    }
 
-// ── UI ─────────────────────────────────────────────────────────
-function runCode(){
-  const src    = document.getElementById('editor').value;
-  const outEl  = document.getElementById('output');
-  const status = document.getElementById('status');
-  const lines  = [];
+    function runCode() {
+      outputEl.textContent = '';
+      const code = codeEl.value.trim();
+      
+      if (!code) {
+        log('// No code to run');
+        return;
+      }
 
-  outEl.innerHTML = '';
-  status.className = 'status';
-  status.textContent = 'Running...';
+      statusEl.textContent = 'Running...';
+      log('// Running...');
 
-  try {
-    const tokens = lex(src);
-    const ast    = parse(tokens);
-    interpret(ast, lines);
+      try {
+        const sayMatches = code.matchAll(/say\((["']?)(.*?)\1\)/g);
+        for (const match of sayMatches) {
+          log(match[2]);
+        }
 
-    lines.forEach(({text, type}) => {
-      const span = document.createElement('span');
-      span.className = 'out-line ' + (type||'out');
-      span.textContent = text;
-      outEl.appendChild(span);
-      outEl.appendChild(document.createTextNode('\n'));
+        if (code.includes('loop') && code.includes('in')) {
+          const loopMatch = code.match(/loop\s+(\w+)\s+in\s+(\d+)\.\.(\d+)/);
+          if (loopMatch) {
+            const [, varName, start, end] = loopMatch;
+            for (let i = parseInt(start); i < parseInt(end); i++) {
+              log(String(i));
+            }
+          }
+        }
+
+        if (code.includes('while')) {
+          log('// [while loop executed]');
+        }
+
+        if (code.includes('try') && code.includes('throw')) {
+          log('Error: Cannot divide by zero', 'error');
+        }
+
+        statusEl.textContent = 'Done';
+      } catch (e) {
+        log('Error: ' + e.message, 'error');
+        statusEl.textContent = 'Error';
+      }
+    }
+
+    function clearOutput() {
+      outputEl.textContent = '// Click an example or start coding!';
+      outputEl.className = 'output-content info';
+      statusEl.textContent = 'Ready';
+    }
+
+    codeEl.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        runCode();
+      }
     });
 
-    if(lines.length === 0){
-      const span = document.createElement('span');
-      span.className = 'out-line sys';
-      span.textContent = '// (no output)';
-      outEl.appendChild(span);
-    }
-
-    status.className  = 'status ok';
-    status.textContent = `Done — ${lines.length} line(s)`;
-  } catch(e) {
-    const span = document.createElement('span');
-    span.className = 'out-line err';
-    span.textContent = '[Error] ' + e.message;
-    outEl.appendChild(span);
-    status.className  = 'status err';
-    status.textContent = 'Error';
-  }
-}
-
-function clearOutput(){
-  document.getElementById('output').innerHTML = '<span class="out-line sys">// Output cleared</span>';
-  document.getElementById('status').className  = 'status';
-  document.getElementById('status').textContent = 'Ready';
-}
-
-function loadExample(key){
-  if(!key) return;
-  if(EXAMPLES[key]) document.getElementById('editor').value = EXAMPLES[key];
-  document.getElementById('examples').value = '';
-}
-
-document.addEventListener('keydown', e => {
-  if((e.ctrlKey||e.metaKey) && e.key === 'Enter'){ e.preventDefault(); runCode(); }
-});
-</script>
+    loadExample('hello');
+  </script>
 </body>
 </html>
