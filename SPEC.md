@@ -1,8 +1,8 @@
 # Untold Lang — Phase 1 Syntax Specification
 
-> **The Language Without Limits** · `v0.1.0` · File extension: `.ut`
+> **The Language Without Limits** · `v2.1.1` · File extension: `.ut`
 
-![version](https://img.shields.io/badge/version-v0.1.0-7C3AED)
+![version](https://img.shields.io/badge/version-v2.1.1-7C3AED)
 ![extension](https://img.shields.io/badge/extension-.ut-0F6E56)
 ![paradigm](https://img.shields.io/badge/paradigm-multi-185FA5)
 ![typing](https://img.shields.io/badge/typing-strong_%2B_inferred-854F0B)
@@ -21,6 +21,8 @@
 | Style | Readable & expressive |
 | Platforms | Linux, Windows, macOS |
 | Install | `pip install untold-lang` |
+| Native Compilation | C backend |
+| Security | Constant-time crypto | |
 
 ---
 
@@ -267,6 +269,9 @@ use untold.hack
 say(hack.sha256("password"))
 say(hack.b64_encode("hello"))
 say(hack.port_scan("localhost", 80, 100))
+say(hack.secure_compare("hash1", "hash2"))       // NEW: timing-safe compare
+say(hack.timing_safe_compare(a, b))              // NEW: constant-time compare
+say(hack.verify_hash("pass", "hash", "sha256"))  // NEW: verify with timing-safe
 ```
 
 | Function | Signature | Description |
@@ -275,6 +280,9 @@ say(hack.port_scan("localhost", 80, 100))
 | `hack.b64_encode` | `hack.b64_encode(data: text) -> text` | Base64 encode |
 | `hack.b64_decode` | `hack.b64_decode(data: text) -> text` | Base64 decode |
 | `hack.port_scan` | `hack.port_scan(host: text, s: num, e: num) -> list` | Scan port range |
+| `hack.secure_compare` | `hack.secure_compare(a: text, b: text) -> bool` | Constant-time compare |
+| `hack.timing_safe_compare` | `hack.timing_safe_compare(a: text, b: text) -> bool` | Timing-safe comparison |
+| `hack.verify_hash` | `hack.verify_hash(pwd: text, hash: text, method: text) -> bool` | Secure hash verification |
 
 > **Note:** For ethical security research and authorized penetration testing only.
 
@@ -295,6 +303,38 @@ say(net.my_ip())
 | `net.port_open` | `net.port_open(host: text, port: num) -> bool` | Check if port is open |
 | `net.resolve` | `net.resolve(host: text) -> text` | Resolve hostname to IP |
 | `net.my_ip` | `net.my_ip() -> text` | Get local machine IP |
+
+---
+
+### untold.crypto — Cryptography Module
+
+```js
+use untold.crypto
+
+say(crypto.sha256("password"))
+say(crypto.sha512("data"))
+say(crypto.hmac_sha256("key", "message"))
+say(crypto.random_token(32))
+say(crypto.secure_compare("a", "b"))              // NEW: timing-safe compare
+say(crypto.timing_safe_compare(a, b))             // NEW: constant-time compare
+say(crypto.verify_hash("pass", "hash"))           // NEW: secure verification
+say(crypto.constant_time_compare(a, b))           // NEW: cryptographic constant-time
+```
+
+| Function | Signature | Description |
+|----------|-----------|-------------|
+| `crypto.sha256` | `crypto.sha256(data: text) -> text` | SHA-256 hash |
+| `crypto.sha512` | `crypto.sha512(data: text) -> text` | SHA-512 hash |
+| `crypto.blake2b` | `crypto.blake2b(data: text) -> text` | BLAKE2b hash |
+| `crypto.hmac_sha256` | `crypto.hmac_sha256(key: text, msg: text) -> text` | HMAC-SHA256 |
+| `crypto.hmac_sha512` | `crypto.hmac_sha512(key: text, msg: text) -> text` | HMAC-SHA512 |
+| `crypto.random_token` | `crypto.random_token(len: num) -> text` | Random token generation |
+| `crypto.random_bytes` | `crypto.random_bytes(len: num) -> text` | Random bytes |
+| `crypto.secure_compare` | `crypto.secure_compare(a: text, b: text) -> bool` | Constant-time comparison |
+| `crypto.timing_safe_compare` | `crypto.timing_safe_compare(a: text, b: text) -> bool` | Timing-safe comparison |
+| `crypto.verify_hash` | `crypto.verify_hash(pwd: text, hash: text, method: text) -> bool` | Secure hash verification |
+| `crypto.constant_time_compare` | `crypto.constant_time_compare(a: text, b: text) -> bool` | Constant-time for crypto |
+| `crypto.pbkdf2` | `crypto.pbkdf2(pwd: text, salt: text, iter: num) -> text` | PBKDF2 key derivation |
 
 ---
 
@@ -338,12 +378,15 @@ say(net.my_ip())
 | `untold build` | Build project to executable |
 | `untold build --target binary` | Compile to standalone binary |
 | `untold build --optimize 2` | Build with max optimization |
+| `untold compile-c file.ut` | Compile to native C code (v2.1.1) |
 | `untold check file.ut` | Check for syntax errors |
 | `untold install <pkg>` | Install a package |
 | `untold remove <pkg>` | Remove a package |
 | `untold list` | List installed packages |
 | `untold search <term>` | Search the package registry |
 | `untold info` | Show project info |
+| `untold repl` | Interactive REPL |
+| `untold debug file.ut` | Debugger mode |
 
 ### Project Templates
 
@@ -380,4 +423,4 @@ start main() {
 
 ---
 
-*Untold Lang v0.1.0 · [thedrjude.github.io/untold-lang](https://thedrjude.github.io/untold-lang) · The Language Without Limits*
+*Untold Lang v2.1.1 · [thedrjude.github.io/untold-lang](https://thedrjude.github.io/untold-lang) · The Language Without Limits*

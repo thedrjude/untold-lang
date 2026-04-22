@@ -139,6 +139,34 @@ class UntoldHack:
     def random_bytes(n=16):
         return os.urandom(int(n)).hex()
 
+    # ── Secure comparison ────────────────────────────────────────
+    @staticmethod
+    def secure_compare(a, b):
+        """Constant-time comparison - prevents timing attacks"""
+        import hmac
+        return hmac.compare_digest(str(a), str(b))
+
+    @staticmethod
+    def timing_safe_compare(a, b):
+        """Timing-safe string comparison for sensitive data"""
+        import hmac
+        return hmac.compare_digest(str(a), str(b))
+
+    @staticmethod
+    def verify_hash(password, hash_value, method="sha256"):
+        """Verify password against hash using timing-safe comparison"""
+        import hashlib
+        if method == "sha256":
+            computed = hashlib.sha256(str(password).encode()).hexdigest()
+        elif method == "sha512":
+            computed = hashlib.sha512(str(password).encode()).hexdigest()
+        elif method == "md5":
+            computed = hashlib.md5(str(password).encode()).hexdigest()
+        else:
+            computed = hashlib.blake2b(str(password).encode()).hexdigest()
+        import hmac
+        return hmac.compare_digest(computed, str(hash_value))
+
     @staticmethod
     def xor_cipher(text, key):
         """Simple XOR cipher — for educational purposes."""

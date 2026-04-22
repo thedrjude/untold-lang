@@ -87,8 +87,35 @@ class Interpreter:
                 return promise.__await__()
             return promise
 
+        def builtin_async(fn, *args):
+            """Create an async function wrapper"""
+            if asyncio.iscoroutinefunction(fn):
+                return fn(*args)
+            return fn(*args)
+
+        def builtin_await_all(promises):
+            """Await multiple promises concurrently"""
+            if isinstance(promises, list):
+                return asyncio.gather(*[asyncio.to_thread(p) if not asyncio.iscoroutine(p) else p for p in promises])
+            return promises
+
+        def builtin_parallel(*fns):
+            """Run multiple functions in parallel"""
+            async def run_all():
+                tasks = []
+                for fn in fns:
+                    if asyncio.iscoroutinefunction(fn):
+                        tasks.append(fn())
+                    else:
+                        tasks.append(asyncio.to_thread(fn))
+                return await asyncio.gather(*tasks)
+            return asyncio.run(run_all())
+
         g.set("say",   builtin_say)
         g.set("wait",  builtin_wait)
+        g.set("async_fn", builtin_async)
+        g.set("await_all", builtin_await_all)
+        g.set("parallel", builtin_parallel)
         g.set("ask",   builtin_ask)
         g.set("len",   builtin_len)
         g.set("type",  builtin_type)
@@ -414,6 +441,10 @@ class Interpreter:
             elif module == "untold.hack":
                 from stdlib.hack import UntoldHack
                 env.set("hack", UntoldHack)
+
+            elif module == "untold.crypto":
+                from stdlib.crypto import UntoldCrypto
+                env.set("crypto", UntoldCrypto)
 
             else:
                 print(f"[Untold] Module '{module}' not found")

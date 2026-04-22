@@ -46,8 +46,31 @@ class UntoldCrypto:
 
     @staticmethod
     def secure_compare(a, b):
-        """Constant-time comparison"""
+        """Constant-time comparison - prevents timing attacks"""
         return hmac.compare_digest(str(a), str(b))
+
+    @staticmethod
+    def timing_safe_compare(a, b):
+        """Timing-safe string comparison for sensitive data"""
+        return hmac.compare_digest(str(a), str(b))
+
+    @staticmethod
+    def verify_hash(password, hash_value, method="sha256"):
+        """Verify password against hash using timing-safe comparison"""
+        if method == "sha256":
+            computed = hashlib.sha256(str(password).encode()).hexdigest()
+        elif method == "sha512":
+            computed = hashlib.sha512(str(password).encode()).hexdigest()
+        else:
+            computed = hashlib.blake2b(str(password).encode()).hexdigest()
+        return hmac.compare_digest(computed, str(hash_value))
+
+    @staticmethod
+    def constant_time_compare(a, b):
+        """Constant-time compare for cryptographic purposes"""
+        a_bytes = str(a).encode()
+        b_bytes = str(b).encode()
+        return hmac.compare_digest(a_bytes, b_bytes)
 
     @staticmethod
     def pbkdf2(password, salt, iterations=100000):
