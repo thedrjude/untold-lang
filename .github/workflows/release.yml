@@ -27,11 +27,13 @@ jobs:
       - name: Build package
         run: python -m build
 
+      - name: Configure PyPI
+        run: |
+          echo -e "[pypi]\nusername = __token__\npassword = ${{ secrets.PYPI_TOKEN }}" > ~/.pypirc
+          chmod 600 ~/.pypirc
+
       - name: Publish to PyPI
         run: twine upload dist/*
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
       - name: Create GitHub Release
         run: |
