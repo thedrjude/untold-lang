@@ -1,8 +1,8 @@
 # Untold Lang — Phase 1 Syntax Specification
 
-> **The Language Without Limits** · `v2.1.1` · File extension: `.ut`
+> **The Language Without Limits** · `v2.2.0` · File extension: `.ut`
 
-![version](https://img.shields.io/badge/version-v2.1.1-7C3AED)
+![version](https://img.shields.io/badge/version-v2.2.0-7C3AED)
 ![extension](https://img.shields.io/badge/extension-.ut-0F6E56)
 ![paradigm](https://img.shields.io/badge/paradigm-multi-185FA5)
 ![typing](https://img.shields.io/badge/typing-strong_%2B_inferred-854F0B)
@@ -16,13 +16,13 @@
 | Property | Value |
 |----------|-------|
 | Extension | `.ut` |
-| Paradigm | Multi (imperative, OOP, async) |
+| Paradigm | Multi (imperative, OOP, async, functional) |
 | Typing | Strong + inferred |
 | Style | Readable & expressive |
 | Platforms | Linux, Windows, macOS |
 | Install | `pip install untold-lang` |
 | Native Compilation | C backend |
-| Security | Constant-time crypto | |
+| Security | Constant-time crypto |
 
 ---
 
@@ -122,6 +122,103 @@ class Person {
 
 let p = Person{ name: "Dev", age: 22 }
 p.greet()
+```
+
+---
+
+## Enums (v2.2.0)
+
+```js
+enum Status {
+    Pending
+    Active
+    Done
+}
+
+let current = Status.Active
+```
+
+---
+
+## Structs (v2.2.0)
+
+```js
+struct Point {
+    x: num
+    y: num
+}
+
+let p = Point{ x: 1, y: 2 }
+say(p.x)
+```
+
+---
+
+## Pattern Matching (v2.2.0)
+
+```js
+let result = match value {
+    1 -> "one"
+    2 -> "two"
+    3 -> "three"
+    else -> "other"
+}
+```
+
+---
+
+## String Templates (v2.2.0)
+
+```js
+let name = "World"
+let msg = `Hello ${name}!`
+say(msg)
+```
+
+---
+
+## List Comprehensions (v2.2.0)
+
+```js
+// [x * x for x in 0..10 if x % 2 == 0]
+let squares = [x * x for x in 0..10 if x % 2 == 0]
+say(squares)
+```
+
+---
+
+## Try Expressions (v2.2.0)
+
+```js
+// Elvis operator: value ?? default
+let name = input_name ?? "Guest"
+```
+
+---
+
+## Error Types (v2.2.0)
+
+```js
+try {
+    throw MyError{ msg: "Oops!", code: 404 }
+} catch err {
+    say("Error: " + err.msg)
+}
+```
+
+---
+
+## Built-in Testing (v2.2.0)
+
+```js
+test "addition works" {
+    assert_eq(add(2, 2), 4)
+}
+
+test "variables work" {
+    let x = 10
+    assert(x > 5)
+}
 ```
 
 ---
@@ -350,11 +447,14 @@ say(crypto.constant_time_compare(a, b))           // NEW: cryptographic constant
 | `let` | Variable | Declare a mutable variable |
 | `lock` | Variable | Declare an immutable constant |
 | `class` | OOP | Declare a class |
+| `enum` | OOP | Declare an enum type (v2.2.0) |
+| `struct` | OOP | Declare a struct type (v2.2.0) |
 | `self` | OOP | Reference to the current instance |
 | `use` | Modules | Import a module |
 | `if` | Control | Conditional branch |
 | `elif` | Control | Else-if branch |
 | `else` | Control | Default branch |
+| `match` | Control | Pattern matching (v2.2.0) |
 | `loop` | Control | Range / iterable for-loop |
 | `while` | Control | Condition-based loop |
 | `in` | Control | Iterator keyword (used with `loop`) |
@@ -363,6 +463,13 @@ say(crypto.constant_time_compare(a, b))           // NEW: cryptographic constant
 | `try` | Errors | Begin error-guarded block |
 | `catch` | Errors | Handle thrown error |
 | `finally` | Errors | Always-run cleanup block |
+| `throw` | Errors | Throw custom error (v2.2.0) |
+| `test` | Testing | Define a test block (v2.2.0) |
+| `assert` | Testing | Assert condition (v2.2.0) |
+| `assert_eq` | Testing | Assert equality (v2.2.0) |
+| `yield` | Async | Yield value for iteration (v2.2.0) |
+| `@` | Decorator | Decorator syntax (v2.2.0) |
+| `??` | Operators | Elvis operator / null coalescing (v2.2.0) |
 | `true` | Literals | Boolean true |
 | `false` | Literals | Boolean false |
 | `null` | Literals | No value |
@@ -423,4 +530,4 @@ start main() {
 
 ---
 
-*Untold Lang v2.1.1 · [thedrjude.github.io/untold-lang](https://thedrjude.github.io/untold-lang) · The Language Without Limits*
+*Untold Lang v2.2.0 · [thedrjude.github.io/untold-lang](https://thedrjude.github.io/untold-lang) · The Language Without Limits*

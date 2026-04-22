@@ -5,6 +5,7 @@ class TokenType(Enum):
     # Literals
     NUMBER      = auto()
     TEXT        = auto()
+    TEXT_TEMPLATE = auto()  # `Hello ${name}`
     BOOL        = auto()
     NULL        = auto()
     IDENTIFIER  = auto()
@@ -33,6 +34,21 @@ class TokenType(Enum):
     FINALLY     = auto()
     TRUE        = auto()
     FALSE       = auto()
+    ENUM        = auto()    # enum Status { ... }
+    STRUCT      = auto()    # struct Point { ... }
+    TEST        = auto()    # test "name" { ... }
+    ASSERT      = auto()    # assert(condition)
+    ASSERT_EQ   = auto()    # assert_eq(a, b)
+    MATCH       = auto()    # match value { ... }
+    ELSE_MATCH  = auto()    # else -> in match
+    THROW       = auto()    # throw Error{ ... }
+    YIELD       = auto()    # yield value
+
+    # Decorator
+    AT          = auto()    # @decorator
+
+    # Try expression
+    ELVIS       = auto()    # ?? fallback operator
 
     # Types
     TYPE_NUM    = auto()
@@ -52,7 +68,7 @@ class TokenType(Enum):
     EQ          = auto()   # =
     EQEQ        = auto()   # ==
     NEQ         = auto()   # !=
-    LT          = auto()   #
+    LT          = auto()   # <
     GT          = auto()   # >
     LTE         = auto()   # <=
     GTE         = auto()   # >=
@@ -61,6 +77,7 @@ class TokenType(Enum):
     NOT         = auto()   # !
     ARROW       = auto()   # ->
     DOTDOT      = auto()   # ..
+    DOTDOTDOT   = auto()   # ... for list comprehension
 
     # Delimiters
     LPAREN      = auto()   # (

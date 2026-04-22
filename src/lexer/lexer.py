@@ -31,6 +31,14 @@ KEYWORDS = {
     "map"    : TokenType.TYPE_MAP,
     "void"   : TokenType.TYPE_VOID,
     "any"    : TokenType.TYPE_ANY,
+    "enum"   : TokenType.ENUM,
+    "struct" : TokenType.STRUCT,
+    "test"   : TokenType.TEST,
+    "assert" : TokenType.ASSERT,
+    "assert_eq": TokenType.ASSERT_EQ,
+    "match"  : TokenType.MATCH,
+    "throw"  : TokenType.THROW,
+    "yield"  : TokenType.YIELD,
 }
 
 class Lexer:
@@ -89,19 +97,38 @@ class Lexer:
                 self.advance()
                 result = ""
                 while self.current() and self.current() != '"':
-                    result += self.advance()
+                    if self.current() == "\\":
+                        self.advance()
+                        esc = self.advance()
+                        escapes = {"n": "\n", "t": "\t", '"': '"', "\\": "\\"}
+                        result += escapes.get(esc, esc)
+                    else:
+                        result += self.advance()
                 self.advance()
                 self.add(TokenType.TEXT, result)
 
-            # Number
+            # String template literal (backticks)
+            elif ch == "`":
+                self.advance()
+                result = ""
+                while self.current() and self.current() != "`":
+                    if self.current() == "\\":
+                        self.advance()
+                        esc = self.advance()
+                        escapes = {"n": "\n", "t": "\t", "`": "`", "$": "$", "\\": "\\"}
+                        result += escapes.get(esc, esc)
+                    else:
+                        result += self.advance()
+                self.advance()
+                self.add(TokenType.TEXT_TEMPLATE, result)
+
             # Number
             elif ch.isdigit():
                 num = ""
                 while self.current() and self.current().isdigit():
                     num += self.advance()
-                # Only consume a dot if it's a decimal (next char is a digit, not another dot)
-                if self.current() == "." and self.peek() and self.peek() != "." and self.peek().isdigit():
-                    num += self.advance()  # consume the dot
+                if self.current() == "." and self.peek() and self.peek().isdigit():
+                    num += self.advance()
                     while self.current() and self.current().isdigit():
                         num += self.advance()
                     self.add(TokenType.NUMBER, float(num))
@@ -122,7 +149,11 @@ class Lexer:
                 self.add(TokenType.ARROW)
             elif ch == "." and self.peek() == ".":
                 self.advance(); self.advance()
-                self.add(TokenType.DOTDOT)
+                if self.current() == ".":
+                    self.advance()
+                    self.add(TokenType.DOTDOTDOT)
+                else:
+                    self.add(TokenType.DOTDOT)
             elif ch == "=" and self.peek() == "=":
                 self.advance(); self.advance()
                 self.add(TokenType.EQEQ)
@@ -141,6 +172,9 @@ class Lexer:
             elif ch == "|" and self.peek() == "|":
                 self.advance(); self.advance()
                 self.add(TokenType.OR)
+            elif ch == "?" and self.peek() == "?":
+                self.advance(); self.advance()
+                self.add(TokenType.ELVIS)
 
             # Single-char operators & delimiters
             else:
@@ -154,6 +188,7 @@ class Lexer:
                     "}": TokenType.RBRACE, "[": TokenType.LBRACKET,
                     "]": TokenType.RBRACKET,",": TokenType.COMMA,
                     ".": TokenType.DOT,    ":": TokenType.COLON,
+                    "@": TokenType.AT,
                 }
                 if ch in single:
                     self.advance()

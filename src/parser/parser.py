@@ -53,12 +53,22 @@ class Parser:
             return self.parse_function()
         if t == TokenType.CLASS:
             return self.parse_class()
+        if t == TokenType.ENUM:
+            return self.parse_enum()
+        if t == TokenType.STRUCT:
+            return self.parse_struct()
+        if t == TokenType.TEST:
+            return self.parse_test()
         if t == TokenType.LET:
             return self.parse_var_decl(constant=False)
         if t == TokenType.LOCK:
             return self.parse_var_decl(constant=True)
         if t == TokenType.RETURN:
             return self.parse_return()
+        if t == TokenType.THROW:
+            return self.parse_throw()
+        if t == TokenType.YIELD:
+            return self.parse_yield()
         if t == TokenType.IF:
             return self.parse_if()
         if t == TokenType.LOOP:
@@ -93,6 +103,10 @@ class Parser:
 
     def parse_function(self):
         is_async = False
+        decorators = []
+        while self.current().type == TokenType.AT:
+            decorators.append(self.parse_decorator())
+
         if self.current().type == TokenType.ASYNC:
             is_async = True
             self.advance()
@@ -104,7 +118,12 @@ class Parser:
             self.advance()
             return_type = self.advance().value
         body = self.parse_block()
-        return FunctionDef(name, params, return_type, body, is_async)
+        return FunctionDef(name, params, return_type, body, is_async, decorators)
+
+    def parse_decorator(self):
+        self.expect(TokenType.AT)
+        name = self.expect(TokenType.IDENTIFIER).value
+        return name
 
     def parse_params(self):
         self.expect(TokenType.LPAREN)
@@ -138,6 +157,43 @@ class Parser:
         self.expect(TokenType.RBRACE)
         return ClassDef(name, fields, methods)
 
+    def parse_enum(self):
+        """Parse enum Status { Pending, Active, Done }"""
+        self.expect(TokenType.ENUM)
+        name = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.LBRACE)
+        variants = []
+        while self.current().type != TokenType.RBRACE:
+            variant = self.expect(TokenType.IDENTIFIER).value
+            variants.append(variant)
+            if self.current().type == TokenType.COMMA:
+                self.advance()
+        self.expect(TokenType.RBRACE)
+        return EnumDef(name, variants)
+
+    def parse_struct(self):
+        """Parse struct Point { x: num, y: num }"""
+        self.expect(TokenType.STRUCT)
+        name = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.LBRACE)
+        fields = []
+        while self.current().type != TokenType.RBRACE:
+            fname = self.expect(TokenType.IDENTIFIER).value
+            self.expect(TokenType.COLON)
+            ftype = self.advance().value
+            fields.append((fname, ftype))
+            if self.current().type == TokenType.COMMA:
+                self.advance()
+        self.expect(TokenType.RBRACE)
+        return StructDef(name, fields)
+
+    def parse_test(self):
+        """Parse test "name" { ... }"""
+        self.expect(TokenType.TEST)
+        name = self.expect(TokenType.TEXT).value
+        body = self.parse_block()
+        return TestBlock(name, body)
+
     def parse_var_decl(self, constant):
         self.advance()
         name      = self.expect(TokenType.IDENTIFIER).value
@@ -153,6 +209,28 @@ class Parser:
         self.expect(TokenType.RETURN)
         value = self.parse_expr()
         return ReturnStmt(value)
+
+    def parse_throw(self):
+        """Parse throw Error{ msg: "..." }"""
+        self.expect(TokenType.THROW)
+        error_name = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.LBRACE)
+        fields = {}
+        while self.current().type != TokenType.RBRACE:
+            key = self.expect(TokenType.IDENTIFIER).value
+            self.expect(TokenType.COLON)
+            val = self.parse_expr()
+            fields[key] = val
+            if self.current().type == TokenType.COMMA:
+                self.advance()
+        self.expect(TokenType.RBRACE)
+        return ThrowStmt(error_name, fields)
+
+    def parse_yield(self):
+        """Parse yield value"""
+        self.expect(TokenType.YIELD)
+        value = self.parse_expr()
+        return YieldStmt(value)
 
     def parse_if(self):
         self.expect(TokenType.IF)
@@ -219,7 +297,16 @@ class Parser:
         return stmts
 
     def parse_expr(self):
-        return self.parse_or()
+        return self.parse_elvis()
+
+    def parse_elvis(self):
+        """Parse Elvis operator: value ?? default"""
+        left = self.parse_or()
+        while self.current().type == TokenType.ELVIS:
+            self.advance()
+            right = self.parse_expr()
+            left = ElvisOp(left, right)
+        return left
 
     def parse_or(self):
         left = self.parse_and()
@@ -325,6 +412,9 @@ class Parser:
         if tok.type == TokenType.TEXT:
             self.advance()
             return TextLiteral(tok.value)
+        if tok.type == TokenType.TEXT_TEMPLATE:
+            self.advance()
+            return self.parse_text_template(tok.value)
         if tok.type in (TokenType.TRUE, TokenType.FALSE):
             self.advance()
             return BoolLiteral(tok.type == TokenType.TRUE)
@@ -348,25 +438,72 @@ class Parser:
 
         # List literal: [1, 2, 3]
         if tok.type == TokenType.LBRACKET:
-            return self.parse_list_literal()
+            return self.parse_list_or_comprehension()
 
         # Map literal: {"key": value}
         if tok.type == TokenType.LBRACE:
+            # Check if it's a struct or map
+            if isinstance(self.peek(1), TokenType) and self.peek(1).type == TokenType.IDENTIFIER:
+                return self.parse_struct_instantiation()
             return self.parse_map_literal()
+
+        # Match expression
+        if tok.type == TokenType.MATCH:
+            return self.parse_match()
+
+        # Assert expressions
+        if tok.type == TokenType.ASSERT:
+            return self.parse_assert()
+        if tok.type == TokenType.ASSERT_EQ:
+            return self.parse_assert_eq()
 
         raise SyntaxError(
             f"[Untold Parser] Unexpected token {tok.type} "
             f"('{tok.value}') at line {tok.line}"
         )
 
+    def parse_text_template(self, template):
+        """Parse `Hello ${name}!` into parts"""
+        import re
+        parts = []
+        last_end = 0
+        for match in re.finditer(r'\$\{(\w+)\}', template):
+            if match.start() > last_end:
+                parts.append((False, template[last_end:match.start()]))
+            parts.append((True, match.group(1)))
+            last_end = match.end()
+        if last_end < len(template):
+            parts.append((False, template[last_end:]))
+        return TextTemplate(parts)
+
+    def parse_list_or_comprehension(self):
+        """Parse [1, 2, 3] or [x * x for x in list]"""
+        self.advance()  # consume [
+        if self.current().type == TokenType.IDENTIFIER and self.peek(1).type == TokenType.IN:
+            return self.parse_list_comprehension()
+        return self.parse_list_literal()
+
+    def parse_list_comprehension(self):
+        """Parse [x * x for x in 0..10 if x % 2 == 0]"""
+        expr = self.parse_expr()
+        self.expect(TokenType.FOR)
+        var = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.IN)
+        iterable = self.parse_expr()
+        condition = None
+        if self.current().type == TokenType.IF:
+            self.advance()
+            condition = self.parse_expr()
+        self.expect(TokenType.RBRACKET)
+        return ListComprehension(expr, var, iterable, condition)
+
     def parse_list_literal(self):
         """Parse [expr, expr, ...]"""
-        self.advance()  # consume [
         elements = []
         if self.current().type != TokenType.RBRACKET:
             elements.append(self.parse_expr())
             while self.current().type == TokenType.COMMA:
-                self.advance()  # consume ,
+                self.advance()
                 elements.append(self.parse_expr())
         self.expect(TokenType.RBRACKET, "list elements")
         return ListLiteral(elements)
@@ -380,9 +517,64 @@ class Parser:
             self.expect(TokenType.COLON, "map key-value separator")
             pairs[key] = self.parse_expr()
             while self.current().type == TokenType.COMMA:
-                self.advance()  # consume ,
+                self.advance()
                 key = self.expect(TokenType.TEXT, "map key").value
                 self.expect(TokenType.COLON, "map key-value separator")
                 pairs[key] = self.parse_expr()
         self.expect(TokenType.RBRACE, "map literal")
         return MapLiteral(pairs)
+
+    def parse_struct_instantiation(self):
+        """Parse Point{ x: 1, y: 2 }"""
+        struct_name = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.LBRACE)
+        fields = {}
+        while self.current().type != TokenType.RBRACE:
+            key = self.expect(TokenType.IDENTIFIER).value
+            self.expect(TokenType.COLON)
+            val = self.parse_expr()
+            fields[key] = val
+            if self.current().type == TokenType.COMMA:
+                self.advance()
+        self.expect(TokenType.RBRACE)
+        return StructInstantiation(struct_name, fields)
+
+    def parse_match(self):
+        """Parse match value { 1 -> "one", 2 -> "two", else -> "other" }"""
+        self.expect(TokenType.MATCH)
+        value = self.parse_expr()
+        self.expect(TokenType.LBRACE)
+        cases = []
+        default = None
+        while self.current().type != TokenType.RBRACE:
+            if self.current().type == TokenType.ELSE:
+                self.advance()
+                self.expect(TokenType.ARROW)
+                default = self.parse_expr()
+            else:
+                pattern = self.parse_expr()
+                self.expect(TokenType.ARROW)
+                result = self.parse_expr()
+                cases.append((pattern, result))
+            if self.current().type == TokenType.COMMA:
+                self.advance()
+        self.expect(TokenType.RBRACE)
+        return MatchExpr(value, cases, default)
+
+    def parse_assert(self):
+        """Parse assert(condition)"""
+        self.expect(TokenType.ASSERT)
+        self.expect(TokenType.LPAREN)
+        condition = self.parse_expr()
+        self.expect(TokenType.RPAREN)
+        return AssertExpr(condition)
+
+    def parse_assert_eq(self):
+        """Parse assert_eq(a, b)"""
+        self.expect(TokenType.ASSERT_EQ)
+        self.expect(TokenType.LPAREN)
+        left = self.parse_expr()
+        self.expect(TokenType.COMMA)
+        right = self.parse_expr()
+        self.expect(TokenType.RPAREN)
+        return AssertEqExpr(left, right)
