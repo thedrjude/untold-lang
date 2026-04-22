@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="untold-lang",
-    version="2.2.6",
+    version="2.3.0",
     description="Untold Lang v2.2.0 — The Language Without Limits",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
