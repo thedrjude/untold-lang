@@ -1,22 +1,21 @@
-import pytest
-import socket
-from stdlib.net import UntoldNet as net
+from stdlib.net import UntoldNet
+
 
 class TestNet:
     def test_port_open(self):
-        result = net.port_open("google.com", 443)
-        assert result == True
+        result = UntoldNet.port_open("google.com", 443)
+        assert result is True
     
     def test_port_closed(self):
-        result = net.port_open("google.com", 9999)
-        assert result == False
+        result = UntoldNet.port_open("google.com", 9999)
+        assert result is False
     
     def test_resolve(self):
-        result = net.resolve("google.com")
+        result = UntoldNet.resolve("google.com")
         assert result is not None
         assert "." in result
     
     def test_my_ip(self):
-        result = net.my_ip()
+        result = UntoldNet.my_ip()
         assert result is not None
         assert len(result) > 0

@@ -1,12 +1,14 @@
-import sys, os
+import os
+import sys
+from contextlib import redirect_stdout
+from io import StringIO
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-import pytest
-from io import StringIO
-from contextlib import redirect_stdout
+from src.interpreter.interpreter import Interpreter
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.interpreter.interpreter import Interpreter
+
 
 def run_code(code, expected_output=None):
     tokens = Lexer(code).tokenize()

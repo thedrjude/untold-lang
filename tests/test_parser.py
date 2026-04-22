@@ -1,10 +1,12 @@
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-import pytest
 from src.lexer.lexer import Lexer
-from src.parser.parser import Parser
 from src.parser.ast_nodes import *
+from src.parser.parser import Parser
+
 
 class TestParser:
     def test_hello_world(self):
@@ -34,7 +36,7 @@ class TestParser:
         tokens = Lexer(code).tokenize()
         ast = Parser(tokens).parse()
         stmt = ast.statements[0].body[0]
-        assert stmt.constant == True
+        assert stmt.constant is True
 
     def test_function_def(self):
         code = 'fn add(a: num, b: num) -> num { return a + b }'
@@ -50,7 +52,7 @@ class TestParser:
         tokens = Lexer(code).tokenize()
         ast = Parser(tokens).parse()
         fn = ast.statements[0]
-        assert fn.is_async == True
+        assert fn.is_async is True
 
     def test_if_statement(self):
         code = 'start main() { if x > 0 { say("yes") } }'
