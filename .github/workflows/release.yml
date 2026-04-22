@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
     permissions:
       contents: write
       id-token: write
@@ -30,8 +32,6 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          environment: pypi
 
       - name: Create GitHub Release
         run: |
