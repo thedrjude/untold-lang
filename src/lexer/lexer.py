@@ -39,6 +39,7 @@ KEYWORDS = {
     "match"  : TokenType.MATCH,
     "throw"  : TokenType.THROW,
     "yield"  : TokenType.YIELD,
+    "for"    : TokenType.FOR,
 }
 
 class Lexer:

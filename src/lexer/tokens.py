@@ -44,6 +44,9 @@ class TokenType(Enum):
     THROW       = auto()    # throw Error{ ... }
     YIELD       = auto()    # yield value
 
+    # List comprehension
+    FOR         = auto()    # for x in list
+
     # Decorator
     AT          = auto()    # @decorator
 

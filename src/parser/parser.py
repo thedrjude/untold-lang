@@ -479,14 +479,16 @@ class Parser:
     def parse_list_or_comprehension(self):
         """Parse [1, 2, 3] or [x * x for x in list]"""
         self.advance()  # consume [
-        if self.current().type == TokenType.IDENTIFIER and self.peek(1).type == TokenType.IN:
+        # Check if next tokens are FOR keyword for list comprehension
+        if self.current().type == TokenType.FOR:
             return self.parse_list_comprehension()
+        # Otherwise it's a list literal, rewind and parse
+        self.pos -= 1  # step back to [
         return self.parse_list_literal()
 
     def parse_list_comprehension(self):
         """Parse [x * x for x in 0..10 if x % 2 == 0]"""
-        expr = self.parse_expr()
-        self.expect(TokenType.FOR)
+        self.expect(TokenType.FOR)  # consume FOR
         var = self.expect(TokenType.IDENTIFIER).value
         self.expect(TokenType.IN)
         iterable = self.parse_expr()
@@ -495,7 +497,7 @@ class Parser:
             self.advance()
             condition = self.parse_expr()
         self.expect(TokenType.RBRACKET)
-        return ListComprehension(expr, var, iterable, condition)
+        return ListComprehension(None, var, iterable, condition)
 
     def parse_list_literal(self):
         """Parse [expr, expr, ...]"""
