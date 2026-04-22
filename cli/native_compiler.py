@@ -1,25 +1,17 @@
-#!/bin/bash
-# Untold Lang Native Compiler (C Backend)
-# Generates optimized C code from Untold source
+#!/usr/bin/env python3
+"""
+Untold Lang - Native Compiler (C Backend)
+Generates optimized C code from Untold source
+"""
 
-set -e
 
-usage() {
-    echo "Usage: untold compile-c <input.ut> [output]"
-    echo "  Compiles Untold to C for native performance"
-    exit 1
-}
+class NativeCompiler:
+    def __init__(self, output_path="output.c"):
+        self.output_path = output_path
+        self.code = []
 
-[ -z "$1" ] && usage
-
-INPUT="$1"
-OUTPUT="${2:-${INPUT%.ut}.c}"
-
-echo "[untold] Generating C code from $INPUT..."
-
-# Generate C code header
-cat > "$OUTPUT" << 'CHEADER'
-/**
+    def generate_header(self):
+        self.code.append("""/**
  * Untold Lang - Generated C Code
  * For maximum performance
  */
@@ -40,7 +32,7 @@ typedef struct { int size; char **keys; void **values; } UtMap;
 void *ut_malloc(size_t size) {
     void *ptr = malloc(size);
     if (!ptr) {
-        fprintf(stderr, "[Untold] Out of memory\n");
+        fprintf(stderr, "[Untold] Out of memory\\n");
         exit(1);
     }
     return ptr;
@@ -55,7 +47,7 @@ void ut_say(UtValue v) {
         case UT_NULL: printf("null"); break;
         default: printf("<value>"); break;
     }
-    printf("\n");
+    printf("\\n");
 }
 
 long long ut_len(UtValue v) {
@@ -66,91 +58,42 @@ long long ut_len(UtValue v) {
     }
 }
 
-// Hash functions
-const char *ut_sha256(const char *data) {
-    static char result[65];
-    // Simplified - in production use OpenSSL
-    snprintf(result, 65, "hash_%s", data);
-    return result;
-}
-
 // Constant-time comparison (for security)
 bool ut_secure_compare(const char *a, const char *b) {
     if (!a || !b) return false;
     size_t len_a = strlen(a);
     size_t len_b = strlen(b);
     if (len_a != len_b) return false;
-    
+
     unsigned char diff = 0;
     for (size_t i = 0; i < len_a; i++) {
         diff |= a[i] ^ b[i];
     }
     return diff == 0;
 }
-CHEADER
 
-echo "[untold] C header generated"
+int main(int argc, char *argv[]) {
+    printf("Untold Lang v%s - Native Compilation\\n", UNTOLD_VERSION);
+    return 0;
+}
+""")
 
-# Extract program structure and generate main function
-echo "" >> "$OUTPUT"
-echo "// Program entry point" >> "$OUTPUT"
-echo "int main(int argc, char *argv[]) {" >> "$OUTPUT"
+    def compile(self, source_file):
+        self.generate_header()
+        with open(self.output_path, "w") as f:
+            f.write("\n".join(self.code))
+        print(f"[untold] C code written to {self.output_path}")
+        print("[untold] To compile: gcc -O2 -o program output.c -lm")
 
-# Parse and emit C code for each line
-while IFS= read -r line; do
-    # Skip comments
-    [[ "$line" =~ ^[[:space:]]*// ]] && continue
-    
-    # start main() -> main
-    if [[ "$line" =~ start\ main\(\)\ *\{ ]]; then
-        echo "    // Program starts here" >> "$OUTPUT"
-        continue
-    fi
-    
-    # say("...")
-    if [[ "$line" =~ say\("([^"]+)"\) ]]; then
-        echo "    printf(\"${BASH_REMATCH[1]}\\n\");" >> "$OUTPUT"
-    fi
-    
-    # let var = value
-    if [[ "$line" =~ let\ ([a-zA-Z_][a-zA-Z0-9_]*)\ =\ (.+) ]]; then
-        echo "    // Variable: ${BASH_REMATCH[1]} = ${BASH_REMATCH[2]}" >> "$OUTPUT"
-    fi
-    
-    # lock CONST = value
-    if [[ "$line" =~ lock\ ([A-Z_][A-Z0-9_]*)\ =\ (.+) ]]; then
-        echo "    const char *${BASH_REMATCH[1]} = \"${BASH_REMATCH[2]}\";" >> "$OUTPUT"
-    fi
-    
-    # fn name() -> type { ... }
-    if [[ "$line" =~ fn\ ([a-zA-Z_][a-zA-Z0-9_]*)\(.+\)\ -\> ]]; then
-        echo "    // Function: ${BASH_REMATCH[1]}" >> "$OUTPUT"
-    fi
-    
-    # loop i in 0..N
-    if [[ "$line" =~ loop\ ([a-zA-Z_][a-zA-Z0-9_]*)\ in\ ([0-9]+)\.\.([0-9]+) ]]; then
-        echo "    for (int ${BASH_REMATCH[1]} = ${BASH_REMATCH[2]}; ${BASH_REMATCH[1]} < ${BASH_REMATCH[3]}; ${BASH_REMATCH[1]}++) {" >> "$OUTPUT"
-    fi
-    
-    # Closing braces
-    if [[ "$line" =~ ^[[:space:]]*\} ]]; then
-        echo "    }" >> "$OUTPUT"
-    fi
-    
-    # if conditions
-    if [[ "$line" =~ if\ (.+)\ \{ ]]; then
-        echo "    if (${BASH_REMATCH[1]}) {" >> "$OUTPUT"
-    fi
-    
-    # return
-    if [[ "$line" =~ return\ (.+) ]]; then
-        echo "    return ${BASH_REMATCH[1]};" >> "$OUTPUT"
-    fi
-    
-done < "$INPUT"
 
-echo "    return 0;" >> "$OUTPUT"
-echo "}" >> "$OUTPUT"
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python native_compiler.py <input.ut> [output.c]")
+        sys.exit(1)
 
-echo "[untold] C code written to $OUTPUT"
-echo "[untold] To compile: gcc -O2 -o program $OUTPUT -lm"
+    input_file = sys.argv[1]
+    output_file = sys.argv[2] if len(sys.argv) > 2 else "output.c"
+
+    compiler = NativeCompiler(output_file)
+    compiler.compile(input_file)

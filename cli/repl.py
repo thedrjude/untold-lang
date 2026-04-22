@@ -1,19 +1,19 @@
 """
 Untold Lang - Interactive REPL
 """
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from src.interpreter.interpreter import Interpreter
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.interpreter.interpreter import Interpreter
 
 
 def cmd_repl():
     """Start interactive REPL"""
-    print(f"Untold Lang v2.0.0 — Interactive Mode")
+    print("Untold Lang v2.0.0 — Interactive Mode")
     print("Type '.help' for commands, '.exit' to quit")
     print()
 

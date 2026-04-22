@@ -1,14 +1,14 @@
 """
 Untold Lang - Debugger
 """
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from src.interpreter.interpreter import Interpreter
 from src.lexer.lexer import Lexer
 from src.parser.parser import Parser
-from src.interpreter.interpreter import Interpreter
 
 
 class Debugger:
@@ -24,7 +24,7 @@ class Debugger:
 
     def run(self):
         """Run with debugging enabled"""
-        print(f"[Debug] Untold Lang Debugger v2.0.0")
+        print("[Debug] Untold Lang Debugger v2.0.0")
         print(f"[Debug] {len(self.ast.statements)} statements")
         print("[Debug] Type 'help' for commands")
         print()

@@ -3,7 +3,6 @@ Untold Lang Package Registry
 v2.1.1 - Expanded ecosystem
 """
 import json
-import os
 from pathlib import Path
 
 PACKAGE_REGISTRY = {

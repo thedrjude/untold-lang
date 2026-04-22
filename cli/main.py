@@ -18,8 +18,8 @@ from cli.commands import (
     cmd_search,
     cmd_version,
 )
-from cli.repl import cmd_repl
 from cli.debug import cmd_debug
+from cli.repl import cmd_repl
 
 
 def main():
