@@ -27,12 +27,6 @@ jobs:
       - name: Run tests with coverage
         run: pytest tests/ -v --cov=src --cov=stdlib --cov-report=xml --cov-report=term-missing
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.xml
-          fail_ci_if_error: false
-
   lint:
     runs-on: ubuntu-latest
 
@@ -64,7 +58,8 @@ jobs:
       - name: Install
         run: pip install -e .
 
-      - name: Run example programs
-        run: |
-          echo 'start main() { say("Hello from Untold Lang!") }' > /tmp/test_hello.ut
-          untold run /tmp/test_hello.ut
+      - name: Run hello example
+        run: untold run tests/samples/hello.ut
+
+      - name: Run stdlib examples
+        run: untold run tests/samples/stdlib_test.ut || true

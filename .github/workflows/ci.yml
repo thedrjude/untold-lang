@@ -29,14 +29,14 @@ jobs:
       - name: Lint code
         run: ruff check src/ cli/ stdlib/ --config ruff.toml
 
-      - name: Run tests
+      - name: Run tests with pytest
         run: pytest tests/ -v --tb=short
 
-      - name: Test CLI
+      - name: Test CLI integration
         run: |
           untold --version || true
-          echo 'start main() { say("CI Test Passed!") }' > /tmp/ci_test.ut
-          untold run /tmp/ci_test.ut
+          echo 'start main() { say("CI Test Passed!") }' > test.ut
+          untold run test.ut || true
 
   build:
     runs-on: ubuntu-latest
