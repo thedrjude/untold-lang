@@ -22,18 +22,10 @@ jobs:
           python-version: '3.13'
 
       - name: Install build tools
-        run: pip install --upgrade pip build twine
+        run: pip install --upgrade pip build
 
       - name: Build package
         run: python -m build
-
-      - name: Configure PyPI
-        run: |
-          echo -e "[pypi]\nusername = __token__\npassword = ${{ secrets.PYPI_TOKEN }}" > ~/.pypirc
-          chmod 600 ~/.pypirc
-
-      - name: Publish to PyPI
-        run: twine upload dist/*
 
       - name: Create GitHub Release
         run: |
