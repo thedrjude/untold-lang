@@ -1,0 +1,28 @@
+// Control Flow
+start main() {
+    let score = 85
+
+    // If-else
+    if score >= 90 {
+        say("Grade: A")
+    } elif score >= 80 {
+        say("Grade: B")
+    } elif score >= 70 {
+        say("Grade: C")
+    } else {
+        say("Grade: F")
+    }
+
+    // For loop with range
+    say("Counting: ")
+    loop i in 0..5 {
+        say(text(i))
+    }
+
+    // While loop
+    let counter = 0
+    while counter < 3 {
+        say("While: " + text(counter))
+        counter = counter + 1
+    }
+}

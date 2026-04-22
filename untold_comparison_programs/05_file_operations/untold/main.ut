@@ -1,0 +1,22 @@
+// File Operations
+use untold.fs
+
+start main() {
+    // Write to file
+    fs.write("data.txt", "Hello from Untold Lang!")
+    say("File written!")
+
+    // Read from file
+    let content = fs.read("data.txt")
+    say("Content: " + content)
+
+    // Check if exists
+    let exists = fs.exists("data.txt")
+    if exists {
+        say("data.txt exists!")
+    }
+
+    // Delete file
+    fs.delete("data.txt")
+    say("File deleted!")
+}

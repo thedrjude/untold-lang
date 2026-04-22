@@ -1,0 +1,28 @@
+// Error Handling
+use untold.fs
+
+start main() {
+    // Try-catch-finally
+    say("=== Error Handling Demo ===")
+
+    // Success case
+    try {
+        fs.write("test.txt", "Hello")
+        let content = fs.read("test.txt")
+        say("Success: " + content)
+    } catch err {
+        say("Error: " + err.msg)
+    } finally {
+        say("Cleanup: deleting file")
+        fs.delete("test.txt")
+    }
+
+    // Error case
+    try {
+        let missing = fs.read("nonexistent.txt")
+    } catch err {
+        say("Caught error: " + err.msg)
+    } finally {
+        say("Done with error demo")
+    }
+}

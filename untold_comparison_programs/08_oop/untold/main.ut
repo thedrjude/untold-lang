@@ -1,0 +1,32 @@
+// Classes and Objects (OOP)
+start main() {
+    // Create person object
+    let p = Person{ name: "Untold", age: 2 }
+    p.greet()
+
+    // Modify properties
+    p.age = 3
+    say("Updated age: " + text(p.age))
+
+    // Use inherited behavior
+    let dev = Developer{ name: "Dev", age: 25, language: "Untold" }
+    dev.greet()
+    dev.introduce()
+}
+
+class Person {
+    name : text
+    age  : num
+
+    fn greet() {
+        say("Hi, I am " + self.name + " and I'm " + text(self.age) + " years old!")
+    }
+}
+
+class Developer < Person {
+    language : text
+
+    fn introduce() {
+        say("I code in " + self.language)
+    }
+}

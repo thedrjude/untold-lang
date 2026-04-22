@@ -1,0 +1,30 @@
+// Variables & Data Types
+start main() {
+    // Mutable variable
+    let name = "Untold"
+    say("Name: " + name)
+
+    // Typed variable
+    let version : num = 2.1
+    say("Version: " + text(version))
+
+    // Boolean
+    let is_awesome : bool = true
+    if is_awesome {
+        say("Untold is awesome!")
+    }
+
+    // Constant
+    lock PI : num = 3.14159
+    say("PI: " + text(PI))
+
+    // List
+    let numbers = [1, 2, 3, 4, 5]
+    say("Numbers: " + text(numbers))
+    say("Count: " + text(numbers.length()))
+
+    // Map
+    let data = {"name": "Untold", "version": "2.1"}
+    say("Data: " + text(data))
+    say("Get name: " + data.get("name"))
+}

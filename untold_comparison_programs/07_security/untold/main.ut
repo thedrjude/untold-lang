@@ -1,0 +1,39 @@
+// Security: Hashing & Encoding
+use untold.crypto
+use untold.hack
+
+start main() {
+    let password = "MySecurePassword123"
+
+    // SHA256 hashing
+    let hash = crypto.sha256(password)
+    say("SHA256: " + hash)
+
+    // SHA512 hashing
+    let hash512 = crypto.sha512(password)
+    say("SHA512: " + hash512)
+
+    // HMAC
+    let hmac = crypto.hmac_sha256("secret_key", password)
+    say("HMAC-SHA256: " + hmac)
+
+    // Base64 encoding
+    let encoded = hack.b64_encode(password)
+    say("Base64: " + encoded)
+
+    // Constant-time comparison (NEW v2.1.1)
+    let stored_hash = crypto.sha256("password")
+    if crypto.secure_compare(stored_hash, hash) {
+        say("Secure match!")
+    }
+
+    // Verify hash (NEW v2.1.1)
+    let computed = crypto.sha256(password)
+    if crypto.verify_hash(password, computed, "sha256") {
+        say("Hash verified!")
+    }
+
+    // Random token generation
+    let token = crypto.random_token(32)
+    say("Random token: " + token)
+}

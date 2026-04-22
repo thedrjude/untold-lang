@@ -1,0 +1,24 @@
+// Functions
+start main() {
+    // Simple function
+    let result = add(5, 3)
+    say("5 + 3 = " + text(result))
+
+    // Function with default parameter
+    let greeting = greet("Untold")
+    say(greeting)
+
+    // Lambda-style with named function
+    let square = fn(x: num) -> num { return x * x }
+    say("Square of 7: " + text(square(7)))
+}
+
+// Function definition
+fn add(a: num, b: num) -> num {
+    return a + b
+}
+
+// Function with default
+fn greet(name: text, greeting: text = "Hello") -> text {
+    return greeting + ", " + name + "!"
+}

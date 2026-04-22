@@ -1,0 +1,14 @@
+// HTTP Requests
+use untold.web
+
+start main() {
+    // GET request
+    say("Fetching data...")
+    let res = http.get("https://api.github.com")
+    say("Status: " + text(res.status))
+    say("Body length: " + text(res.body.length()))
+
+    // POST request
+    let post_res = http.post("https://httpbin.org/post", {"key": "value"})
+    say("POST Status: " + text(post_res.status))
+}

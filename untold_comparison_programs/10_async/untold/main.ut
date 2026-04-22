@@ -1,0 +1,32 @@
+// Async Programming
+use untold.web
+
+start main() {
+    say("=== Async Programming Demo ===")
+
+    // Sequential async (slower)
+    say("Fetching sequentially...")
+    let res1 = wait http.get("https://httpbin.org/delay/1")
+    say("First done!")
+
+    // Parallel async (faster) - NEW v2.1.1
+    say("Fetching in parallel...")
+    let results = await_all([
+        http.get("https://httpbin.org/get"),
+        http.get("https://httpbin.org/get"),
+        http.get("https://httpbin.org/get")
+    ])
+    say("All done in parallel!")
+
+    // Run functions in parallel - NEW v2.1.1
+    say("Running functions in parallel...")
+    let output = parallel(
+        fn() -> text { return "Task 1 done" },
+        fn() -> text { return "Task 2 done" }
+    )
+    say(text(output))
+}
+
+fn get_data() -> text {
+    return "Data retrieved"
+}
